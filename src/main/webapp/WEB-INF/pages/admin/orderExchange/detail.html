@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>订单详情</title>
+    <link rel="stylesheet" href="/resource/layui/css/layui.css"/>
+    <style>
+        .content-box{margin: 20px;}
+        .content-box-inline-block{display: inline-block; margin-bottom: 0;}
+        .order-status{color: #ff0000; font-size: 16px; font-weight: 800; padding-left: 20px;}
+    </style>
+</head>
+<body>
+    <div class="content-box">
+        <div class="layui-collapse">
+            <div class="layui-colla-item">
+                <h2 class="layui-colla-title">订单详情<span class="order-status">${oe.statusStr!'' }</span></h2>
+                <div class="layui-colla-content layui-show">
+                    <form class="layui-form layui-form-pane" action="">
+                        <div class="layui-form-item content-box-inline-block">
+                            <label class="layui-form-label">订单号</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="orderNo" value="${oe.orderNo!'' }" disabled autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-form-item content-box-inline-block">
+                            <label class="layui-form-label">手机号码</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="phone" value="${oe.phone!'' }" disabled autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-form-item content-box-inline-block">
+                            <label class="layui-form-label">兑换积分</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="integral" value="${oe.integral!'' }" disabled autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-form-item content-box-inline-block">
+                            <label class="layui-form-label">兑换日期</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="createTime" value="${oe.createTime?string('yyyy-MM-dd HH:mm:ss') }" disabled autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-form-item layui-form-text">
+                            <label class="layui-form-label">备注</label>
+                            <div class="layui-input-block">
+                                <textarea disabled class="layui-textarea">${oe.remark!'' }</textarea>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="layui-colla-item">
+                <h2 class="layui-colla-title">商品详情</h2>
+                <div class="layui-colla-content layui-show">
+                    <form class="layui-form layui-form-pane" action="">
+                        <div class="layui-form-item content-box-inline-block">
+                            <label class="layui-form-label">产品名称</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="productName" value="${oe.product.productName!'' }" disabled autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-form-item content-box-inline-block">
+                            <label class="layui-form-label">产品编码</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="productCode" value="${oe.product.productCode!'' }" disabled autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-form-item content-box-inline-block">
+                            <label class="layui-form-label">兑换积分</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="points" value="${oe.product.points!'' }" disabled autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-form-item content-box-inline-block">
+                            <label class="layui-form-label">市场价(元)</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="marketPrice" value="${oe.product.marketPrice!'' }" disabled autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-form-item content-box-inline-block">
+                            <label class="layui-form-label">销售价(元)</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="salePrice" value="${oe.product.salePrice!'' }" disabled autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-form-item content-box-inline-block">
+                            <label class="layui-form-label">总库存</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="stockCount" value="${oe.product.stockCount!'0' }" disabled autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-form-item content-box-inline-block">
+                            <label class="layui-form-label">已兑换数量</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="saleCount" value="${oe.product.saleCount!'0' }" disabled autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <!--发码显示-->
+            <#if oe.dealType??>
+                <#if oe.dealType == 1>
+                    <div class="layui-colla-item">
+                        <h2 class="layui-colla-title">券码详情<span class="order-status">${oe.dealStatusStr!'' }</span></h2>
+                        <div class="layui-colla-content layui-show">
+                            <table class="layui-table">
+                                <colgroup>
+                                    <col width="150">
+                                    <col width="200">
+                                    <col>
+                                </colgroup>
+                                <thead>
+                                <tr>
+                                    <th>券码编码</th>
+                                    <th>券码名称</th>
+                                    <th>券码状态</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <#if oe.orderAssists?? && oe.orderAssists?size != 0>
+                                    <#list oe.orderAssists as assists>
+                                        <tr>
+                                            <td>${assists.assistcode!'未知' }</td>
+                                            <td>${assists.couponname!'未知' }</td>
+                                            <td>${assists.status!'未知' }</td>
+                                        </tr>
+                                    </#list>
+                                </#if>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </#if>
+                <!-- 红包显示-->
+                <#if oe.dealType == 2>
+                    <div class="layui-colla-item">
+                        <h2 class="layui-colla-title">红包详情<span class="order-status">${oe.dealStatusStr!'' }</span></h2>
+                        <div class="layui-colla-content layui-show">
+                            <table class="layui-table">
+                                <colgroup>
+                                    <col width="150">
+                                    <col width="150">
+                                    <col width="200">
+                                    <col>
+                                </colgroup>
+                                <thead>
+                                    <tr>
+                                        <th>活动名称</th>
+                                        <th>红包订单号</th>
+                                        <th>红包金额(元)</th>
+                                        <th>祝福语</th>
+                                        <th>结果</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <#if redpack??>
+                                        <tr>
+                                            <td>${redpack.actName!'未知' }</td>
+                                            <td>${redpack.detail_id!(redpack.send_listid!'')}</td>
+                                            <td>
+                                                <#if redpack.total_amount??>
+                                                    ${(redpack.total_amount?number)*0.01}
+                                                </#if>
+                                            </td>
+                                            <td>${redpack.wishing!'未知' }</td>
+                                            <td>
+                                                <#if redpack.status??>
+                                                    <#switch redpack.status>
+                                                        <#case 'SENDING'>
+                                                            发放中
+                                                            <#break>
+                                                        <#case 'SENT'>
+                                                            已发放待领取
+                                                            <#break>
+                                                        <#case 'FAILED'>
+                                                            发放失败
+                                                            <#break>
+                                                        <#case 'RECEIVED'>
+                                                            已领取
+                                                            <#break>
+                                                        <#case 'RFUND_ING'>
+                                                            退款中
+                                                            <#break>
+                                                         <#case 'REFUND'>
+                                                             已退款
+                                                             <#break>
+                                                        <#default>
+                                                           ${redpack.return_msg!'未知' }
+                                                    </#switch>
+                                                    <#else/>
+                                                    ${redpack.return_msg!'未知' }
+                                                </#if>
+                                            </td>
+                                        </tr>
+                                    </#if>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </#if>
+            </#if>
+        </div>
+    </div>
+</body>
+<script type="text/javascript" src="/resource/layui/layui.js"></script>
+<script>
+    //注意：折叠面板 依赖 element 模块，否则无法进行功能性操作
+    layui.use('element', function(){
+        var element = layui.element, form = layui.form;
+
+    });
+</script>
+</html>

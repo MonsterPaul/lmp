@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>电子码管理</title>
+    <link rel="stylesheet" href="/resource/layui/css/layui.css"/>
+    <style>
+        .r-content {
+            padding: 0 20px;
+        }
+
+        .r-content div {
+            margin: 0;
+        }
+
+        .r-btn-area {
+            margin-top: 10px;
+        }
+
+        .r-btn-area blockquote {
+            margin-bottom: 0;
+            border-right: 1px solid #e2e2e2;
+            border-top: 1px solid #e2e2e2;
+            padding: 5px;
+        }
+
+        .r-search {
+            margin: 10px 20px 0;
+        }
+
+        .layui-form-switch {
+            width: 60px;
+        }
+    </style>
+</head>
+<body>
+
+<!-- 电子码生成导出导入区域-->
+<@p.permission bizCode='${bizCode}03|${bizCode}04|${bizCode}05'>
+<div class="layui-collapse r-search">
+    <div class="layui-colla-item">
+        <h2 class="layui-colla-title">电子码生成导出导入</h2>
+        <div class="layui-colla-content layui-show">
+            <div class="r-content r-btn-area">
+                <!-- 按钮区域 -->
+                <blockquote class="site-text layui-elem-quote">
+                    <@p.permission bizCode='${bizCode}03'>
+                    <div class="layui-inline">
+                        <label class="layui-form-label" style="width: 93px;">电子码积分数:</label>
+                        <select id="points" class="layui-input" style="width: 220px;" lay-verify="required"
+                                lay-search="">
+                            <option value="">请选择</option>
+                            <#list pointsMap?values as value>
+                                <option value="${value}">${value!""}</option>
+                            </#list>
+                        </select>
+                    </div>
+
+                    <div class="layui-form-item" style="display: inline-block; margin-bottom: 0;">
+                        <label class="layui-form-label" style="width: 80px;">电子码个数:</label>
+                        <div class="layui-input-block" style="margin-left: 113px;">
+                            <input type="text" id="num" value="" placeholder="请输入电子码个数"
+                                   required lay-verify="required" autocomplete="off" class="layui-input">
+                        </div>
+
+                    </div>
+                    &nbsp;&nbsp;&nbsp;
+
+                    <button data-id="" data-method="create" class="layui-btn save"><i class="layui-icon">&#xe608;</i>
+                        电子码生成导出
+                    </button>
+                 </@p.permission>
+                &nbsp;&nbsp;&nbsp;
+               <@p.permission bizCode='${bizCode}05'>
+                <button data-id="" data-method="createAndSend" class="layui-btn save">
+                    电子码生成发送
+                </button>
+               </@p.permission>
+
+                    <@p.permission bizCode='${bizCode}04'>
+                    <br><br>
+                    <label class="layui-form-label" style="width: 80px;">电子码导入:</label>
+                    <a class="layui-btn" href="/resource/webapp/lifeintegral/codeImport.xlsx" >导入模板下载</a>
+                    <button type="button" class="layui-btn layui-btn-normal" id="chooseFile">选择文件</button>
+                    <button type="button" class="layui-btn" id="upload">导入</button>
+                    </@p.permission>
+                </blockquote>
+            </div>
+        </div>
+    </div>
+</div>
+</@p.permission>
+
+<!-- 搜索区域-->
+<div class="layui-collapse r-search">
+    <div class="layui-colla-item">
+        <h2 class="layui-colla-title">搜索</h2>
+        <div class="layui-colla-content layui-show">
+            <form id="electroniCodeSearchForm"
+                  action="/admin/lifeIntegral/electronicCode/v_list.do?bizCode=${bizCode}&pageNum=1"
+                  method="post">
+                <div class="layui-form-item" style="display: inline-block; margin-bottom: 0;">
+                    <label class="layui-form-label" style="width: 48px;">电子码:</label>
+                    <div class="layui-input-block" style="margin-left: 78px;">
+                        <input type="text" name="code" value="${electroniCode.code!'' }" placeholder="请输入电子码"
+                               autocomplete="off" class="layui-input">
+                    </div>
+
+                </div>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <label>创建时间:&nbsp;&nbsp;</label>
+                <div class="layui-inline">
+                    <#if  electroniCode.createBeginTime??>
+                        <input type="text" class="layui-input test-item" name="createBeginTime"
+                               value="${electroniCode.createBeginTime }">
+                        <#else>
+                            <input type="text" class="layui-input test-item" name="createBeginTime" placeholder="请选择">
+                    </#if>
+                </div>
+                &nbsp;--&nbsp;&nbsp;
+                <div class="layui-inline">
+                    <#if  electroniCode.createEndTime??>
+                        <input type="text" class="layui-input test-item" name="createEndTime"
+                               value="${electroniCode.createEndTime }">
+                        <#else>
+                            <input type="text" class="layui-input test-item" name="createEndTime" placeholder="请选择">
+                    </#if>
+                </div>
+                &nbsp;&nbsp;&nbsp;
+                <div class="layui-inline">
+                    <label class="layui-form-label" style="width: 93px;">电子码积分数:</label>
+                    <select name="points" class="layui-input" style="width: 220px;" lay-verify="required"
+                            lay-search="">
+                        <option value="">请选择</option>
+                        <#list pointsMap?values as value>
+                            <option value="${value}"
+                            <#if (electroniCode.points)?? && (electroniCode.points?string.number == value) >
+                                selected=selected
+                            </#if>
+                            >${value!""}</option>
+                        </#list>
+
+                    </select>
+                </div>
+                <br><br>
+                <label>兑换时间:&nbsp;&nbsp;</label>
+                <div class="layui-inline">
+                    <#if  electroniCode.exchangeBeginTime??>
+                        <input type="text" class="layui-input test-item" name="exchangeBeginTime"
+                               value="${electroniCode.exchangeBeginTime }">
+                        <#else>
+                            <input type="text" class="layui-input test-item" name="exchangeBeginTime" placeholder="请选择">
+                    </#if>
+                </div>
+                &nbsp;--&nbsp;&nbsp;
+                <div class="layui-inline">
+                    <#if  electroniCode.exchangeEndTime??>
+                        <input type="text" class="layui-input test-item" name="exchangeEndTime"
+                               value="${electroniCode.exchangeEndTime }">
+                        <#else>
+                            <input type="text" class="layui-input test-item" name="exchangeEndTime" placeholder="请选择">
+                    </#if>
+                </div>
+                &nbsp;&nbsp;
+                状态:&nbsp;&nbsp;
+                <div class="layui-inline">
+                    <select name="status" class="layui-input" style="width: 220px;" lay-verify="required"
+                            lay-search="">
+                        <option value="">请选择</option>
+                        <#list statusMap?keys as key>
+                            <option value="${key}"
+                            <#if (electroniCode.status)?? && (electroniCode.status?string.number == key) >
+                                selected=selected
+                            </#if>
+                            >${(statusMap['${key}'])!""}</option>
+                        </#list>
+                    </select>
+                </div>
+                &nbsp;&nbsp;
+                <div class="layui-form-item" style="display: inline-block; margin-bottom: 0;">
+                    <label class="layui-form-label" style="width: 67px;">电话号码:&nbsp;&nbsp;</label>
+                    <div class="layui-input-block" style="margin-left: 97px;">
+                        <input type="text" name="mobile" value="${electroniCode.mobile!'' }" placeholder="请输入电话号码"
+                               autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <@p.permission bizCode='${bizCode}09'>
+                <br>
+                <div class="layui-form-item" style="display: inline-block; margin-bottom: 0;">
+                    <label class="layui-form-label" style="width: 48px;">创建者:</label>
+                    <div class="layui-input-block" style="margin-left: 78px;">
+                        <input type="text" name="creatorName" value="${electroniCode.creatorName!'' }" placeholder="请输入创建者"
+                               autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item" style="display: inline-block; margin-bottom: 0;">
+                    <label class="layui-form-label" style="width: 48px;">发送者:</label>
+                    <div class="layui-input-block" style="margin-left: 78px;">
+                        <input type="text" name="senderName" value="${electroniCode.senderName!'' }" placeholder="请输入发送者"
+                               autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item" style="display: inline-block; margin-bottom: 0;">
+                    <label class="layui-form-label" style="width: 48px;">导入者:</label>
+                    <div class="layui-input-block" style="margin-left: 78px;">
+                        <input type="text" name="importorName" value="${electroniCode.importorName!'' }" placeholder="请输入导入者"
+                               autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                &nbsp;&nbsp;所属渠道:&nbsp;&nbsp;
+                <div class="layui-inline">
+                    <select name="channelId" class="layui-input" style="width: 220px;" lay-verify="required"
+                            lay-search="">
+                        <option value="">请选择</option>
+                        <#if channelList??>
+                            <#list channelList as channel>
+                                <option value="${channel.id}"
+                                <#if (electroniCode.channelId)?? && (electroniCode.channelId == channel.id) >
+                                    selected=selected
+                                </#if>
+                                >${channel.channelName!''}</option>
+                            </#list>
+                        </#if>
+                    </select>
+                </div>
+                </@p.permission>
+                &nbsp;&nbsp;&nbsp;&nbsp;
+                <@p.permission bizCode='${bizCode}01'>
+                <button style="margin-top: -3px;" class="layui-btn ">搜索</button>
+                </@p.permission>
+                <@p.permission bizCode='${bizCode}02'>
+                <input type="button" style="margin-top: -3px;" data-id="" data-method="exportList" class="layui-btn"
+                       value="导出"/>
+                </@p.permission>
+            </form>
+
+        </div>
+    </div>
+</div>
+<!-- -->
+<!-- 内容区域-->
+<div id="r-content" class="r-content">
+    <!-- 分页容器-->
+    <table id="page" lay-filter="tableFilter"></table>
+</div>
+</body>
+
+<!--------------------------------- JS ---------------------------------------->
+<script type="text/jscript" src="/resource/js/common/jquery-3.1.1.min.js"></script>
+<script src="/resource/layui/layui.js"></script>
+<!--搜索区域JS-->
+
+<script>
+    layui.use(['element'], function () {
+        var element = layui.element;
+    });
+</script>
+<script>
+    function getStatus(data) {
+        var status = data.status;
+        switch (status) {
+            case 1 :
+                return "已导出";
+            case 2 :
+                return "已发送";
+            case 3 :
+                return "已兑换";
+            case 4 :
+                return "已作废";
+            case 5 :
+                return "发送失败";
+        }
+    }
+    function dealEntity(data){
+
+        if(data.creator){
+            return data.creator.username;
+        }
+        return "";
+    }
+</script>
+<!--操作按钮-->
+<script type="text/html" id="barBtns">
+    <@p.permission bizCode='${bizCode }06'>
+    <!--发送失败的电子码才可以重发-->
+    {{# if (d.status == 5) { }}
+    <a class="layui-btn layui-btn-warm layui-btn-mini" lay-event="resendSms">重新发送短信</a>
+    {{# } }}
+    </@p.permission>
+    <@p.permission bizCode='${bizCode }07'>
+    <!--已发送的电子码才可以作废-->
+    {{# if (d.status == 2) { }}
+    <a class="layui-btn layui-btn-danger layui-btn-mini" lay-event="abandoned">电子码作废</a>
+    {{# } }}
+    </@p.permission>
+</script>
+<!-- 分页JS-->
+<script>
+    layui.use('form', function () {
+    });
+
+    layui.use(['jquery', 'table', 'form', 'laydate', 'upload'], function () {
+        var $ = layui.jquery;
+        var table = layui.table;
+        var laydate = layui.laydate;
+        var form = layui.form;
+        var upload = layui.upload;//文件上传
+        //执行渲染
+        var tableIns = table.render({
+            id: 'dataTable',
+            elem: '#page', //指定原始表格元素选择器（推荐id选择器）
+            page: true,
+            even: true,
+            cols: [[ //标题栏
+                {field: 'code', title: '电子码', width: 160}
+                , {field: 'creator.channelName', title: '所属渠道', sort: true, width: 110}
+                , {field: 'points', title: '电子码积分', sort: true, width: 110}
+                , {field: 'status', title: '状态', dataDeal: 'getStatus', sort: true, width: 120}
+                , {field: 'mobile', title: '电话号码', width: 120}
+                , {field: 'createTime', title: '创建|导出时间', sort: true, width: 165}
+                , {field: 'creator.username', title: '创建|导出者', sort: true, width: 120}
+                , {field: 'sender.username', title: '发送者', sort: true, width: 120}
+                , {field: 'sendTime', title: '发送时间', sort: true, width: 165}
+                , {field: 'exchangeTime', title: '兑换时间', sort: true, width: 165}
+                , {field: 'importTime', title: '导入时间', sort: true, width: 165}
+                , {field: 'importor.username', title: '导入者', sort: true, width: 120}
+                , {field: 'expireTime', title: '过期时间', sort: true, width: 165}
+                , {field: 'remark', title: '备注', sort: true, width: 120}
+                , {fixed: 'right', title: '操作', width: 200, align: 'center', toolbar: '#barBtns'} //操作按钮
+
+            ]],
+            url: '/admin/lifeIntegral/electronicCode/o_list.json',
+            method: 'POST',
+            where: {
+                bizCode: '${bizCode}01',
+                code: "${electroniCode.code!''}",
+                points: "${electroniCode.points!''}",
+                status: "${electroniCode.status!''}",
+                createBeginTime: "${electroniCode.createBeginTime!''}",
+                createEndTime: "${electroniCode.createEndTime!''}",
+                exchangeBeginTime: "${electroniCode.exchangeBeginTime!''}",
+                exchangeEndTime: "${electroniCode.exchangeEndTime!''}",
+                mobile: "${electroniCode.mobile!''}",
+                creatorName:"${electroniCode.creatorName!''}",
+                senderName:"${electroniCode.senderName!''}",
+                importorName:"${electroniCode.importorName!''}",
+                channelId:"${electroniCode.channelId!''}"
+            },
+            limits: layui.globalConfig.limits,
+            limit: 20,
+            request: {
+                pageName: 'pageNum', //页码的参数名称，默认：page
+                limitName: 'pageSize', //每页数据量的参数名，默认：limit
+
+            },
+            response: {
+                statusName: 'status',
+                statusCode: '00000', //成功的状态码，默认：0
+                msgName: 'msg', //状态信息的字段名称，默认：msg
+                countName: 'count', //数据总数的字段名称，默认：count
+                dataName: 'data'
+            }
+        });
+
+
+        //文件上传
+        upload.render({
+            elem: '#chooseFile',
+            url: '/admin/lifeIntegral/electronicCode/o_importExcel.do?bizCode=${bizCode}04',
+            auto: false,
+            accept: 'file',
+            bindAction: '#upload',
+            before: function (obj) {//文件上传之前的回调
+                 var fileName = $("span.layui-upload-choose").html();
+                 if(fileName== "" || fileName == undefined){
+                     layer.alert("请先选择文件");
+                 }
+            },
+
+            done: function (res) {
+                if (res.respCode == "00000") {//上传成功
+                    layer.alert(res.msg);
+                    layui.table.reload("dataTable");
+                } else {//如果上传失败
+                    layer.alert(res.msg);
+                }
+            }
+        });
+
+        //触发事件
+        var active = {
+            create: function () {//电子码生成方法
+                var num = $("#num").val();
+                var points = $("#points option:selected").val();
+                if (!num) {
+                    layer.msg("生成数量不能为空");
+                    return;
+                }
+                if (!points) {
+                    layer.msg("请选择电子码积分数");
+                    return;
+                }
+                //确认框
+                layer.open({//配置样式
+                    type: 0,//信息框
+                    title: '温馨提示：',
+                    content: '确定生成并导出' + num + '条' + '积分数为' + points + '的电子码数据吗？',
+                    shahe: 0.3,//遮罩效果
+                    time: 5000,//5秒没有点击自动关闭
+                    btn: ['确定', '取消'],
+                    yes: function () {//确定
+                        layer.closeAll();
+                        location.href = "/admin/lifeIntegral/electronicCode/o_export.do?bizCode=${bizCode}03" + "&num=" + num + "&points=" + points;
+                    },
+                    btn2: function () {//取消
+                        layer.closeAll();
+                    }
+                });
+
+            },
+            exportList: function () {//电子码列表数据导出
+                //确认框
+                layer.open({//配置样式
+                    type: 0,//信息框
+                    title: '温馨提示：',
+                    content: '确定导出电子码数据吗？',
+                    shahe: 0.3,//遮罩效果
+                    time: 5000,//5秒没有点击自动关闭
+                    btn: ['确定', '取消'],
+                    yes: function () {//确定
+                        layer.closeAll();
+                        location.href = "/admin/lifeIntegral/electronicCode/o_exportList.do?bizCode=${bizCode}02&" + $("#electroniCodeSearchForm").serialize();
+                    },
+                    btn2: function () {//取消
+                        layer.closeAll();
+                    }
+                });
+            },
+            downloadFile: function () {
+                location.href = "/admin/file/downloadFile.do?fileName=" + "批量导入电子码表.xlsx";
+
+            },
+            createAndSend: function () {//电子码生成发送
+                var that = this;
+                //多窗口模式，层叠置顶
+                //异步请求返回页面
+                layer.open({
+                    type: 2 //返回iframe类型
+                    , title: '电子码生成发送'
+                    , area: ['860px', '550px']//窗口大小
+                    , shade: 0.3//显示透明罩效果
+                    , maxmin: true
+                    , resize: false
+                    , btnAlign: 'c'//按钮位置居中
+                    , content: '/admin/lifeIntegral/electronicCode/v_createAndSend.do?bizCode=${bizCode}05'
+                    , zIndex: 999 //重点1：层级
+                    , success: function (layero, index) {//参数1：当前dom,参数2：索引
+                        layer.setTop(layero); //重点2
+                    }
+
+                });
+            },
+
+
+        };
+        //为按钮注入事件
+        $('.layui-btn').on('click', function () {
+            var $othis = $(this), $method = $othis.data('method');
+            active[$method] ? active[$method].call(this, $othis) : '';
+        });
+
+        lay('.test-item').each(function () {
+            laydate.render({
+                elem: this
+                , trigger: 'click'
+            });
+        })
+        //监听工具条
+        table.on('tool(tableFilter)', function(obj){
+            var data = obj.data;
+            if(obj.event === 'resendSms'){
+                layer.confirm('确定重新发送该电子码给用户？', function(index){
+                    $.post("/admin/lifeIntegral/electronicCode/o_resend.do", { bizCode:'${bizCode}06',id: data.id },
+                        function(data){
+                            if(data.status == '00000'){
+                                layer.close(index);
+                                layer.msg("发送成功！");
+                                tableIns.reload();
+                            }else{
+                                layer.msg(data.msg);
+                            }
+                        },"json");
+                });
+            }else if(obj.event ==='abandoned'){
+                layer.confirm('确定作废电子码？', function(index){
+                    var ids = [];
+                    ids.push(data.id);
+                    $.ajax({
+                        url: "/admin/lifeIntegral/electronicCode/o_abandoned.do",
+                        type: "POST",
+                        data: {
+                            bizCode:'${bizCode}07',
+                            "ids": ids,
+                        },
+                        dataType: "JSON",
+                        traditional: true,//这里设置为true
+                        success: function (data) {
+                            if(data.status == '00000'){
+                                layer.close(index);
+                                layer.msg("作废成功！");
+                                tableIns.reload();
+                            }else{
+                                layer.msg(data.msg);
+                            }
+
+                        },
+                        error: function () {
+                            alert("服务器内部错误");
+                        }
+
+                    });
+//                    $.post("/admin/lifeIntegral/electronicCode/o_abandoned.do", { bizCode:'${bizCode}07',id: data.code },
+//                        function(data){
+//                            if(data.status == '00000'){
+//                                layer.close(index);
+//                                layer.msg("作废成功！");
+//                                tableIns.reload();
+//                            }else{
+//                                layer.msg(data.msg);
+//                            }
+//                        },"json");
+                });
+            }
+        });
+
+    });
+</script>
+</html>

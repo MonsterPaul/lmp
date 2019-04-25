@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zjht.jfmall.dao.AppUserMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.zjht.jfmall.entity.AppUser">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="age" property="age"/>
+        <result column="sex" property="sex"/>
+        <result column="phone" property="phone"/>
+        <result column="address" property="address"/>
+        <result column="wechat" property="wechat"/>
+        <result column="qq" property="qq"/>
+        <result column="id_card" property="idCard"/>
+        <result column="card_z_url" property="cardZUrl"/>
+        <result column="card_f_url" property="cardFUrl"/>
+        <result column="id_card_url" property="idCardUrl"/>
+        <result column="heard_url" property="heardUrl"/>
+        <result column="bank_no" property="bankNo"/>
+        <result column="bank_address" property="bankAddress"/>
+        <result column="bank_person" property="bankPerson"/>
+        <result column="bank_phone" property="bankPhone"/>
+        <result column="balance" property="balance"/>
+        <result column="invite_link" property="inviteLink"/>
+        <result column="service_id" property="serviceId"/>
+        <result column="data_status" property="dataStatus"/>
+        <result column="iden_status" property="idenStatus"/>
+        <result column="operator_status" property="operatorStatus"/>
+        <result column="bank_status" property="bankStatus"/>
+        <result column="loans" property="loans"/>
+        <result column="loans_status" property="loansStatus"/>
+        <result column="pwd" property="pwd"/>
+        <result column="status" property="status"/>
+        <result column="register_time" property="registerTime"/>
+        <result column="sesame_credit" property="sesameCredit"/>
+        <result column="credit_card" property="creditCard"/>
+        <result column="is_invited" property="isInvited"/>
+        <result column="accumulation" property="accumulation"/>
+        <result column="sunLoan" property="sunLoan"/>
+        <result column="sunCommission" property="sunCommission"/>
+        <result column="accumulation" property="accumulation"/>
+        <result column="back_list" property="backList"/>
+        <result column="is_login" property="isLogin"/>
+        <result column="applyCommSum" property="applyCommSum"/>
+        <result column="countAmount" property="countAmount"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, name, age, sex, phone, address, wechat, qq, id_card AS idCard,
+        card_z_url AS cardZUrl, card_f_url AS cardFUrl, id_card_url AS idCardUrl,
+        heard_url AS heardUrl, bank_no AS bankNo, bank_address AS bankAddress,
+        bank_person AS bankPerson, bank_phone AS bankPhone, balance, invite_link AS inviteLink,
+         service_id AS serviceId, data_status AS dataStatus, iden_status AS idenStatus,
+         operator_status AS operatorStatus, bank_status AS bankStatus, loans, loans_status AS loansStatus,pwd,status,
+         register_time as registerTsime,sesame_credit AS sesameCredit,credit_card AS creditCard,is_invited AS isInvited,accumulation,back_list,is_login As isLogin
+    </sql>
+
+    <select id="findById" resultMap="BaseResultMap">
+        select * from app_user where id = #{id }
+    </select>
+
+    <select id="countDownloas" resultType="java.lang.Integer">
+        select count(au.id) from app_user as au
+          INNER JOIN t_channel_invitation as ci
+          on au.id = ci.invitation_user_id
+          where au.is_login = '1' and ci.channel_business_id = #{user.id }
+        <if test="user.exchangeTimeBegin != null and user.exchangeTimeBegin != ''">
+            <![CDATA[  and ci.invitation_time >= '${user.exchangeTimeBegin} 00:00:00'  ]]>
+        </if>
+        <if test="user.exchangeTimeEnd != null and user.exchangeTimeEnd != ''">
+            <![CDATA[  and ci.invitation_time <=  '${user.exchangeTimeEnd} 23:59:59']]>
+        </if>
+    </select>
+    
+    <select id="successCount" resultType="java.lang.Integer">
+        select count(DISTINCT au.id) from app_user as au
+            inner join app_user_loan_plat as plat
+            on au.id = plat.app_user_id
+            inner join t_channel_invitation as ci
+            on au.id = ci.invitation_user_id
+            where plat.back_loan_status = '1' and ci.channel_business_id = #{user.id }
+        <if test="user.exchangeTimeBegin != null and user.exchangeTimeBegin != ''">
+            <![CDATA[  and ci.invitation_time >= '${user.exchangeTimeBegin} 00:00:00'  ]]>
+        </if>
+        <if test="user.exchangeTimeEnd != null and user.exchangeTimeEnd != ''">
+            <![CDATA[  and ci.invitation_time <=  '${user.exchangeTimeEnd} 23:59:59']]>
+        </if>
+    </select>
+
+    <select id="countByChannel" resultType="java.lang.Integer">
+        select count(au.id) from app_user as au
+        INNER JOIN t_channel_invitation as ci on au.id = ci.invitation_user_id where ci.channel_business_id =
+        #{user.id }
+        <if test="user.exchangeTimeBegin != null and user.exchangeTimeBegin != ''">
+            <![CDATA[  and ci.invitation_time >= '${user.exchangeTimeBegin} 00:00:00'  ]]>
+        </if>
+        <if test="user.exchangeTimeEnd != null and user.exchangeTimeEnd != ''">
+            <![CDATA[  and ci.invitation_time <=  '${user.exchangeTimeEnd} 23:59:59']]>
+        </if>
+    </select>
+
+    <update id="updateStatus">
+        update app_user set status = #{status } where id = #{id }
+    </update>
+
+    <select id="findBeinvitedPage" resultType="com.zjht.jfmall.entity.AppUser">
+        select au.*, aui.invitation_money as invitationMmoney from app_user as au INNER JOIN t_app_user_invitation as aui on au.id = aui.beinvited_id where aui.invitation_id = #{bean.id }
+    </select>
+
+    <select id="findLoanPage" resultMap="BaseResultMap">
+        SELECT
+        ifnull(sum(a.use_amount),0) AS sunLoan,
+        ifnull(sum(a.use_comm),0) AS sunCommission,
+        ifnull(sum(a.apply_comm),0) AS applyCommSum,
+        ifnull(count(DISTINCT  a.platform_id),0) AS countAmount,
+
+        t.*
+        FROM
+        app_user_loan_plat a right join app_user t ON t.id = a.app_user_id
+        WHERE
+        a.service_user_id = #{bean.serviceId} and a.back_loan_status='1'
+        and t.service_id = #{bean.serviceId}
+        <if test="bean.exchangeTimeBegin != null and bean.exchangeTimeBegin != ''">
+            <![CDATA[  and a.coll_date >= '${bean.exchangeTimeBegin} 00:00:00'  ]]>
+        </if>
+        <if test="bean.exchangeTimeEnd != null and bean.exchangeTimeEnd != ''">
+            <![CDATA[  and a.coll_date <=  '${bean.exchangeTimeEnd} 23:59:59']]>
+        </if>
+        <if test="bean.keyWord!=null and bean.keyWord!='' ">
+            and t.name like CONCAT('%',CONCAT(#{bean.keyWord},'%') ) or t.phone like
+            CONCAT('%',CONCAT(#{bean.keyWord},'%') ) or t.wechat like CONCAT('%',CONCAT(#{bean.keyWord},'%') ) or t.qq
+            like
+            CONCAT('%',CONCAT(#{bean.keyWord},'%') )
+        </if>
+        GROUP BY
+        a.app_user_id
+    </select>
+
+    <select id="findLoan" resultMap="BaseResultMap">
+        SELECT
+        t.*, a.sunLoan,
+        a.sunCommission
+        FROM
+        app_user t
+        LEFT JOIN (
+        SELECT
+        sum(use_amount) AS sunLoan,
+        sum(use_comm) AS sunCommission,
+        app_user_id
+        FROM
+        app_user_loan_plat
+        WHERE
+        service_user_id = #{bean.serviceId} and app_user_id=#{bean.id} and back_loan_status='1'
+        GROUP BY
+        app_user_id
+        ) a ON t.id = a.app_user_id where t.service_id = #{bean.serviceId} and t.id=#{bean.id}
+
+    </select>
+
+    <select id="countByTime" resultType="java.lang.Integer">
+        SELECT COUNT(*) from app_user
+        <where>
+            <if test="startTime != null and startTime != ''">
+                <![CDATA[ and register_time >= #{startTime }]]>
+            </if>
+            <if test="endTime != null and endTime != ''">
+                <![CDATA[ and register_time <= #{endTime }]]>
+            </if>
+        </where>
+    </select>
+
+    <select id="countNumByTime" resultType="java.lang.Integer">
+        SELECT COUNT(*) from app_user
+        <where>
+            AND loans_status = '1'
+            <if test="startTime != null and startTime != ''">
+                <![CDATA[ and register_time >= #{startTime }]]>
+            </if>
+            <if test="endTime != null and endTime != ''">
+                <![CDATA[ and register_time <= #{endTime }]]>
+            </if>
+        </where>
+    </select>
+
+    <select id="countByServiceId" resultType="java.lang.Integer">
+        select count(*) from app_user where service_id = #{serviceId }
+    </select>
+
+    <select id="countByServiceIds" resultType="java.lang.Integer">
+        select count(*) from app_user where service_id = #{user.id } and register_time like CONCAT(#{user.exchangeTimeBegin},'%')
+    </select>
+
+    <select id="findInvitationName" resultType="java.lang.String">
+      select u.`name` from app_user as u INNER JOIN t_app_user_invitation as ui on u.id = ui.invitation_id where ui.beinvited_id = #{beinvitedId }
+    </select>
+</mapper>

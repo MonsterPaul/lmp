@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>详情</title>
+    <link rel="stylesheet" href="/resource/layui/css/layui.css"/>
+    <style>
+        .r-content{padding: 0 20px;}
+        .r-content div{margin: 0;}
+    </style>
+</head>
+<body>
+<div style="margin: 20px;">
+    <form id="form" class="layui-form" action="" method="post">
+        <!-- 内容区域-->
+        <div id="r-content" class="r-content">
+            <!-- 分页容器-->
+            <table id="page" lay-filter="tableFilter"></table>
+        </div>
+    </form>
+</div>
+<input type="hidden" id="bizCode" value="${bizCode }">
+</body>
+<!-- JS -->
+<script type="text/jscript" src="/resource/js/common/jquery-3.1.1.min.js"></script>
+<script src="/resource/js/common/jquery.cookie.js"></script>
+<script src="/resource/layui/layui.all.js"></script>
+<script src="/resource/layui/layui.js"></script>
+<script type="text/html" id="titleTpl1">
+    <div>{{d.LAY_TABLE_INDEX + 1}}</div>
+</script>
+<script>
+    var result = true;//js影响出现多次提及问题，暂不知道原因，所有用这个判断控制提及一次
+    layui.use(['jquery','table','form','element'], function(){
+        var form = layui.form,//表单模块
+            $ = layui.jquery,
+            table = layui.table;
+
+        //执行渲染
+        var tableIns = table.render({
+            id:'dataTable',
+            elem: '#page', //指定原始表格元素选择器（推荐id选择器）
+            even: true,
+            cols:  [[ //标题栏
+                {field: 'index', title: '序列', width: 50, templet:'#titleTpl1'}
+                ,{field: 'user.name', title: '客户姓名', width: 200}
+                ,{field: 'user.hidPhone', title: '手机号码', width: 200}
+                ,{field: 'createTime', title: '申请时间', width: 200}
+            ]],
+            url: '/admin/allLoan/record.json',
+            method:'POST',
+            where : {
+                bizCode: '${bizCode }',
+                id: '${bean.id }'
+            },
+            request: {
+                pageName: 'pageNum', //页码的参数名称，默认：page
+                limitName: 'pageSize', //每页数据量的参数名，默认：limit
+            },
+            response: {
+                statusName: 'status',
+                statusCode: '00000', //成功的状态码，默认：0
+                msgName: 'msg', //状态信息的字段名称，默认：msg
+                countName: 'count', //数据总数的字段名称，默认：count
+                dataName: 'data'
+            }
+        });
+    });
+</script>
+</html>

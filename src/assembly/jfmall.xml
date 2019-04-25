@@ -1,0 +1,39 @@
+<assembly xmlns="http://maven.apache.org/ASSEMBLY/2.0.0"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://maven.apache.org/ASSEMBLY/2.0.0 http://maven.apache.org/xsd/assembly-2.0.0.xsd">
+    <id>20180410</id>
+    <formats>
+        <format>zip</format>
+    </formats>
+    <fileSets>
+        <!--class文件和配置文件打包 -->
+        <fileSet>
+            <directory>${project.basedir}/target/classes/</directory>
+            <outputDirectory>\WEB-INF\classes</outputDirectory>
+            <includes>
+                <include>com\zjht\jfmall\action\admin\lifeIntegral\ElectronicCodeAct.class</include>
+                <include>com\zjht\jfmall\action\admin\lifeIntegral\OrderExchangeAct.class</include>
+                <include>com\zjht\jfmall\entity\base\BaseOrderExchange.class</include>
+                <include>com\zjht\jfmall\mapper\OrderExchangeDao.xml</include>
+                <include>com\zjht\jfmall\service\impl\OrderExchangeServiceImpl.class</include>
+
+            </includes>
+        </fileSet>
+         <!-- 页面和资源文件文件打包-->
+        <fileSet>
+            <directory>src/main/webapp/</directory>
+            <outputDirectory>\</outputDirectory>
+            <includes>
+                <include>WEB-INF\pages\admin\orderExchange\list.html</include>
+            </includes>
+        </fileSet>
+        <!--jar打包 -->
+        <fileSet>
+            <directory>${project.basedir}/target/jfMall/</directory>
+            <outputDirectory>\</outputDirectory>
+            <includes>
+                <include></include>
+            </includes>
+        </fileSet>
+    </fileSets>
+</assembly>

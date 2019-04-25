@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>九信金融app下载</title>
+		<style>
+			html {
+				font-size: 100px;
+			}
+			
+			@media screen and (min-width: 320px) {
+				html {
+					font-size: 42.667px;
+				}
+			}
+			
+			@media screen and (min-width: 360px) {
+				html {
+					font-size: 48px;
+				}
+			}
+			
+			@media screen and (min-width: 375PX) {
+				html {
+					font-size: 50px;
+				}
+			}
+			
+			@media screen and (min-width: 384px) {
+				html {
+					font-size: 51.2px;
+				}
+			}
+			
+			@media screen and (min-width: 400px) {
+				html {
+					font-size: 53.3px;
+				}
+			}
+			
+			@media screen and (min-width: 412px) {
+				html {
+					font-size: 54.9px;
+				}
+			}
+			
+			@media screen and (min-width: 414px) {
+				html {
+					font-size: 55.2px;
+				}
+			}
+			
+			@media screen and (min-width: 424px) {
+				html {
+					font-size: 56.5px;
+				}
+			}
+			
+			@media screen and (min-width: 480px) {
+				html {
+					font-size: 64px;
+				}
+			}
+			
+			@media screen and (min-width: 540px) {
+				html {
+					font-size: 72px;
+				}
+			}
+			
+			@media screen and (min-width: 720px) {
+				html {
+					font-size: 96px;
+				}
+			}
+			
+			@media screen and (min-width: 750px) {
+				html {
+					font-size: 100px;
+				}
+			}
+			
+			@media screen and (min-width: 768px) {
+				html {
+					font-size: 102.4px;
+				}
+			}
+			
+			@media screen and (min-width: 800px) {
+				html {
+					font-size: 106.7px;
+				}
+			}
+			
+			@media screen and (min-width: 980px) {
+				html {
+					font-size: 130.7px;
+				}
+			}
+			
+			@media screen and (min-width: 1080px) {
+				html {
+					font-size: 144px;
+				}
+			}
+			
+			@media screen and (min-width: 1152px) {
+				html {
+					font-size: 153.6px;
+				}
+			}
+			
+			@media screen and (min-width: 1366px) {
+				html {
+					font-size: 182.1px;
+				}
+			}
+			
+			@media screen and (min-width: 1440px) {
+				html {
+					font-size: 192px;
+				}
+			}
+			
+			@media screen and (min-width: 2160px) {
+				html {
+					font-size: 288px;
+				}
+			}
+			
+			html,
+			body,
+			div,
+			input {
+				margin: 0;
+				padding: 0;
+			}
+			
+			html,
+			body {
+				width: 100%;
+				height: 100%;
+			}
+			.app-wrap{
+				width: 100%;
+				height: 100%;
+				box-sizing: border-box;
+				background: url(../../../resource/img/download_bg_bottom.png) center bottom;
+				background-repeat: no-repeat;
+				background-size: 100%;
+				font-size: .12rem;
+			}
+			.download-box{
+				position: fixed;
+				top: 50%;
+				left: 0;
+				width: 100%;
+				transform: translate(0,-56%);
+				-webkit-transform:translate(0,-56%);
+				-moz-transform:translate(0,-56%);
+				-webkit-transform:translate(0,-56%);
+			}
+			.download-btn-wrap{
+				overflow: hidden;
+			}
+			.download-btn-wrap>div{
+				display: inline-block;
+				width: 50%;
+				float: left;
+				box-sizing: border-box;
+				padding: .3rem;
+				padding-top: 0.4rem;
+				text-align: center;
+			}
+			.download-box img{
+				width: 100%;
+				height: auto;
+			}
+			.download-bg-center{
+				height: 7.07rem;
+				background: url(../../../resource/img/download_bg_center.png) no-repeat center;
+				background-size: 100% auto;
+				width: 100%;
+			}
+			#shadow{
+				background: url(../../../resource/img/guide_tips.png) right 1rem top .7rem;
+				background-repeat: no-repeat;
+				background-color: rgba(0,0,0,.5);
+				z-index: 99999;
+				position: fixed;
+				top: 0;
+				left: 0;
+				height: 100%;
+				width: 100%;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="shadow" style="display: none;" onclick="hideDialog()">
+			
+		</div>
+		<div class="app-wrap">
+			<div class="download-box" >
+				<div class="download-bg-center"></div>
+				<div class="download-btn-wrap">
+					<div onclick="loadAppClk('ios')">
+					<img src="../../../resource/img/ios_btn.png">
+				</div>
+				<div onclick="loadAppClk('android')">
+					<img src="../../../resource/img/android_btn.png">
+				</div>
+				</div>
+			</div>
+		</div>
+	</body>
+	<script>
+		function hideDialog(){
+			document.getElementById('shadow').style.display='none'
+		}
+		function isShowDialog(){
+			var ua = navigator.userAgent.toLowerCase(); 
+			if(ua.match(/MicroMessenger/i)=="micromessenger") { 
+				 document.getElementById('shadow').style.display='block'
+				 return true
+			}else {
+				return false
+			}
+		}
+		function loadAppClk(client){
+			if(!isShowDialog()){
+				if(client=='ios'){
+				//IOS下载
+					window.location.href='https://www.pgyer.com/jiuxinjinrong'
+				}
+				if(client=='android'){
+					//安卓客户端下载
+					window.location.href='http://download.renrenxin.top/app-jxjr.apk'
+				}
+			}
+		}
+	</script>
+</html>

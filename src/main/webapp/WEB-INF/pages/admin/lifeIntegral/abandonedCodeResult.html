@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>商户登录</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="stylesheet" href="/resource/webapp/lifeintegral/css/base.css">
+    <link rel="stylesheet" href="/resource/webapp/lifeintegral/css/def.css">
+    <script src="/resource/js/common/jquery-3.1.1.min.js"></script>
+    <script src="/resource/webapp/lifeintegral/js/global.js"></script>
+</head>
+<body bgcolor="#146e2e">
+
+<header class="login-infor">
+    <img src="/resource/webapp/lifeintegral/images/local/login-user.png">
+    <p>${member.nickName }</p>
+</header>
+
+<section class="form-infor">
+    <dl>
+        <dt>客户手机号：${mobile}</dt>
+        <dd>
+            <div class="data">
+                <table id="data-select" cellpadding="0" cellspacing="0" width="100%">
+                    <thead>
+                    <tr>
+                        <td></td>
+                        <td>电子码</td>
+                        <td>电子码积分</td>
+                        <td>发送时间</td>
+                        <td>状态</td>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <#if electroniCodes??>
+                        <#list electroniCodes as electroniCode >
+                            <tr>
+                                <td>
+                                    <#if electroniCode.status == 2>
+                                        <i class="check"><span class="hide">${electroniCode.id!''}</span></i>
+                                    </#if>
+                                </td>
+                                <td name="code">${electroniCode.code!''}</td>
+                                <td>${electroniCode.points!''}</td>
+                                <td>
+                                    <#if electroniCode.sendTime??>
+                                        ${electroniCode.sendTime?string('yyyy-MM-dd hh:mm:ss')}
+                                        <#else/>
+                                        --
+                                    </#if>
+                                </td>
+                                <td>${electroniCode.statusStr}</td>
+                            </tr>
+                        </#list>
+                    </#if>
+
+                    </tbody>
+                </table>
+                <div id="all-select" class="all"><i></i>全选</div>
+            </div>
+        </dd>
+    </dl>
+</section>
+
+<section class="form-btn">
+    <button class="btn" id="abandonedCode">作废</button>
+    <a class="btn" href="#" onClick="javascript :history.back(-1);return false;">返回</a>
+</section>
+
+<script>
+    $(function () {
+        $("#data-select").on("click", ".check", function () {
+            $(this).toggleClass("cur");
+            if ($(this).hasClass("cur") == false) {
+                $("#all-select").removeClass("sel");
+            }
+            ;
+        });
+
+        $("#all-select").on("click", function () {
+            if ($(this).hasClass("sel") == true) {
+                $(this).removeClass("sel");
+                $("#data-select").find(".check").removeClass("cur");
+            } else {
+                $(this).addClass("sel");
+                $("#data-select").find(".check").addClass("cur");
+            }
+
+        });
+
+        function getCode() {
+            var params = [];
+            $("#data-select").find(".cur").each(function () {
+                params.push($(this).children().text());
+            });
+            return params;
+        }
+
+        var subFlag = false;
+        $("#abandonedCode").click(function () {
+            if (confirm("确认作废已选择的电子码?")) {
+
+                if (subFlag) {
+                    alert("正在处理，请勿重复提交");
+                    return false;
+                }
+
+                //获取作废电子码的ID
+                var ids = getCode();
+                if (ids.length <= 0) {
+                    alert("没有要作废的电子码");
+                    return false;
+                }
+
+                subFlag = true;
+                $.ajax({
+                    url: "/admin/lifeIntegral/electronicCode/o_abandoned.do?bizCode=j010107",
+                    type: "POST",
+                    data: {
+                        "ids": ids,
+                    },
+                    dataType: "JSON",
+                    traditional: true,//这里设置为true
+                    success: function (data) {
+                        subFlag = false;
+                        alert(data.msg);
+                        window.location.reload()
+
+                    },
+                    error: function () {
+                        subFlag = false;
+                        alert("服务器内部错误");
+                    }
+
+                });
+                return false;
+            }
+
+        });
+    });
+
+
+</script>
+
+</body>
+</html>

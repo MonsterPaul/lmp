@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport"
+		content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+	<title>详情</title>
+	<link href="css/mui.min.css" rel="stylesheet" />
+	<link href="css/style.css" rel="stylesheet" />
+</head>
+
+<body>
+	<div class="detileBxo">
+		<div class="derileTop">
+
+		</div>
+		<div class="centent">
+
+		</div>
+	</div>
+	<!-- 立即申请按钮 -->
+	<div class="sqBox">
+
+	</div>
+
+</body>
+
+<script src="js/mui.min.js"></script>
+<script src="js/common.js"></script>
+<script src="js/jquery-3.2.1.js"></script>
+<script type="text/javascript">
+	$(function () {
+		var loanId = GetQueryString('loadId')
+		console.log(loanId)
+		// 获取贷超详情
+		$.post(common_src + "getAllLoanById", { loanId: loanId }, function (res) {
+			console.log('获取贷超详情', res)
+			if (res.status == '200') {
+				var html = `<div class="detileUserbox">
+								<img src="${res.data.logo}" alt="" />
+								<div class="username">
+									<p class="name">${res.data.name}</p>
+									<p class="js_text">${res.data.introduction}</p>
+								</div>
+							</div>
+							<ul class="xxList mui-clearfix">
+								<li>
+									<h3>通过率</h3>
+									<p>成功率${res.data.passingRate}</p>
+								</li>
+								<li>
+									<h3>额度</h3>
+									<p>${res.data.amountStr}</p>
+								</li>
+								<li>
+									<h3>期限</h3>
+									<p>${res.data.deadlineStr}</p>
+								</li>
+								<li>
+									<h3>利息</h3>
+									<p>年利息${res.data.yearRate}</p>
+								</li>
+							</ul>`
+				$('.derileTop').html(html)
+
+				html = `<div class="cententitem">
+						<h2>下款攻略</h2>
+						<p>${res.data.raiders}</p>
+					</div>
+					<div class="cententitem">
+						<h2>申请流程</h2>
+						<p>${res.data.applyCondition}</p>
+					</div>
+					<div class="cententitem">
+						<h2>特别说明</h2>
+						<p>${res.data.description}</p>
+					</div>`
+				$('.centent').html(html)
+				$('.sqBox').html(`<button data-url="${res.data.registLink}" class="ljsq_btn">立即申请(今天已有${res.data.applyNum}人下款)</button>`)
+
+				// 新增贷超浏览信息
+				$.post(common_src + "saveLoanClick", { loanId: loanId }, function (res) {
+					console.log('新增贷超浏览信息', res)
+				}, 'json');
+			}
+		}, 'json');
+		// 新增贷超申请信息
+		$('.sqBox').on('tap','.ljsq_btn',function(e){
+			var url = $(this).attr('data-url')
+			$.post(common_src + "saveUserApplyLoan", { loanId: loanId,id: 'f40a6e9913ee4e808988a0151b778f20' }, function (res) {
+				console.log('新增贷超申请信息', res)
+				if(res.status=='200'){
+					window.location.href = url
+				}
+			}, 'json');
+		})
+		
+	})
+</script>
+
+</html>

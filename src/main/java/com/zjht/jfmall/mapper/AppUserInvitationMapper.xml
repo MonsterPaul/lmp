@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zjht.jfmall.dao.AppUserInvitationMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.zjht.jfmall.entity.AppUserInvitation">
+        <result column="id" property="id" />
+        <result column="invitation_id" property="invitationId" />
+        <result column="beinvited_id" property="beinvitedId" />
+        <result column="invitation_time" property="invitationTime" />
+        <result column="invitation_money" property="invitationMoney" />
+        <result column="beinvitedName" property="beinvitedName" />
+        <result column="beinvitedMobile" property="beinvitedMobile" />
+        <result column="beinvitedUrl" property="beinvitedUrl" />
+        <result column="data_status" property="dataStatus" />
+        <result column="iden_status" property="idenStatus" />
+        <result column="operator_status" property="operatorStatus" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, invitation_id AS invitationId, beinvited_id AS beinvitedId, invitation_time AS invitationTime, invitation_money AS invitationMoney, data_status AS dataStatus, iden_status AS idenStatus,
+         operator_status AS operatorStatus
+    </sql>
+
+    <select id="getUserInvitationList" resultMap="BaseResultMap">
+        SELECT taui.*,t.name as beinvitedName,t.phone as beinvitedMobile,t.heard_url as beinvitedUrl from t_app_user_invitation taui left join app_user t on t.id=taui.beinvited_id where taui.invitation_id=#{invitationId}  order by invitation_time desc limit ${(num-1)*size},${size}
+
+    </select>
+
+    <select id="countByInvitationId" resultType="java.lang.Integer">
+        SELECT count(id) FROM t_app_user_invitation where invitation_id = #{invitationId }
+    </select>
+
+    <select id="sumMoney" resultType="java.lang.Double">
+        SELECT SUM(invitation_money) from t_app_user_invitation
+        <where>
+            <if test="startTime != null and startTime != ''">
+                <![CDATA[ and invitation_time >= #{startTime }]]>
+            </if>
+            <if test="endTime != null and endTime != ''">
+                <![CDATA[ and invitation_time <= #{endTime }]]>
+            </if>
+        </where>
+    </select>
+
+</mapper>

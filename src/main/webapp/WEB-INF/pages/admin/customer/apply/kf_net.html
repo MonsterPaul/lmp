@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>新增</title>
+    <link rel="stylesheet" href="/resource/layui/css/layui.css"/>
+</head>
+<body>
+<div style="margin: 20px;">
+    <form id="subForm" class="layui-form" action="" method="post">
+        <input type="hidden" name="recordId" value="${bean.id!'' }">
+        <input type="hidden" name="appUserId" value="${bean.appUserId!'' }">
+        <input type="hidden" name="serviceUserId" value="${bean.userId!'' }">
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">平台</label>
+            <div class="layui-input-block">
+                <select name="platformId" lay-verify="required">
+                    <#list nets as net>
+                        <option value="${net.id!'' }">${net.name!'' }， 类型：${net.type!'' }</option>
+                    </#list>
+                </select>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">账号</label>
+            <div class="layui-input-block">
+                <input type="text" name="account" maxlength="50" value="${account!'' }" required lay-verify="required" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">密码</label>
+            <div class="layui-input-block">
+                <input type="text" name="password" maxlength="50" required lay-verify="required" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">已放款金额</label>
+            <div class="layui-input-block">
+                <input type="text" name="useAmount" maxlength="10" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">状态</label>
+            <div class="layui-input-block">
+                <select name="collStatus" lay-verify="required">
+                    <option value="3">已申请</option>
+                    <option value="1">跑单</option>
+                    <option value="4">拒绝</option>
+                    <option value="5">客户放弃</option>
+                </select>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div style="width: 80%; margin: 0 auto; text-align: center;">
+                <button class="layui-btn" lay-filter="save" lay-submit>保存</button>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">已申请平台</label>
+            <div class="layui-input-block" style="line-height: 36px;">${bean.usePlatStr!'' }</div>
+        </div>
+    </form>
+</div>
+</body>
+
+<script src="/resource/js/common/jquery-3.1.1.min.js"></script>
+<script src="/resource/layui/layui.all.js"></script>
+<script>
+
+    var bizCode = '${bizCode}';
+    if(bizCode){
+        bizCode = bizCode.substring(0,5);
+    }
+
+    layui.use('form', function() {
+        var form = layui.form, layer = layui.layer, upload = layui.upload;//图片上传
+        //监听提交
+        form.on('submit(save)', function(data) {
+            var url = "/admin/apply/kf_net.json?bizCode="+bizCode+"04";
+            $.post(url, $("#subForm").serialize(), function(data) {
+                if (data.status == "00000") {//提示成功后重新加载数据
+                    layer.msg("新增成功");
+                    var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                    parent.layui.table.reload("platTable");
+                    parent.layer.close(index);
+                } else {
+                    layer.alert(data.msg);
+                }
+            }, "JSON");
+            return false;//出错则不关闭窗口
+        });
+    });
+</script>
+</html>

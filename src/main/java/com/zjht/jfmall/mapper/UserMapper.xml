@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zjht.jfmall.dao.UserDao">
+    <resultMap id="BaseResultMap" type="com.zjht.jfmall.entity.User">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="id" jdbcType="VARCHAR" property="id"/>
+        <result column="nick_name" jdbcType="VARCHAR" property="nickName"/>
+        <result column="password" jdbcType="VARCHAR" property="password"/>
+        <result column="mobile" jdbcType="VARCHAR" property="mobile"/>
+        <result column="username" jdbcType="VARCHAR" property="username"/>
+        <result column="type" jdbcType="INTEGER" property="type"/>
+        <result column="email" jdbcType="VARCHAR" property="email"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="remarks" jdbcType="VARCHAR" property="remarks"/>
+        <result column="channel_id" jdbcType="VARCHAR" property="channelId"/>
+        <result column="points" property="points" jdbcType="INTEGER"/>
+        <result column="address" property="address" jdbcType="VARCHAR"/>
+        <result column="wechat" property="wechat" jdbcType="VARCHAR"/>
+        <result column="link_man" property="linkMan" jdbcType="VARCHAR"/>
+        <result column="way" property="way" jdbcType="VARCHAR"/>
+        <result column="price" property="price" jdbcType="VARCHAR"/>
+        <result column="qr_code" property="qrCode" jdbcType="VARCHAR"/>
+        <result column="channel_link" property="channelLink" jdbcType="VARCHAR"/>
+        <result column="status" property="status" jdbcType="INTEGER"/>
+        <result column="last_login_ip" property="lastLoginIp" jdbcType="VARCHAR"/>
+        <result column="last_login_time" property="lastLoginTime" jdbcType="TIMESTAMP"/>
+        <result column="login_count" property="loginCount" jdbcType="INTEGER"/>
+        <result column="sunLoan" property="sunLoan"/>
+        <result column="sunCommission" property="sunCommission"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+    id, nick_name AS nickName, password, mobile, username, type,
+    email, create_time AS createTime, update_time AS updateTime, remarks,
+     channel_id AS channelId, points, address, wechat,
+     link_man AS linkMan, way, price, qr_code AS qrCode,
+      channel_link AS channelLink, channel_per_id AS channelPerId,status,last_login_ip AS lastLoginIp,last_login_time AS last_login_time,login_count AS loginCount
+  </sql>
+
+    <select id="getUserOneByName" parameterType="java.lang.String" resultMap="BaseResultMap">
+      SELECT * from t_user where username = #{userName}
+  </select>
+    <select id="getUsersByName" parameterType="java.lang.String" resultMap="BaseResultMap">
+      SELECT * from t_user where username = #{userName}
+  </select>
+    <select id="getUserByNameAndChannel" parameterType="java.lang.String" resultMap="BaseResultMap">
+      SELECT * from t_user where username = #{userName} and channel_id = #{channelId}
+  </select>
+    <select id="getPermissionsById" parameterType="java.lang.String" resultType="java.lang.String">
+    select DISTINCT m.code from t_role_menu rm,t_user_role ur,t_role r,t_menu m
+    where rm.menu_id=m.id and
+    rm.role_id=r.id and
+    ur.role_id=r.id and
+    ur.user_id = #{userId}
+  </select>
+
+    <select id="getUserByRoleId" resultMap="BaseResultMap">
+    SELECT  u.*
+    FROM t_user u
+    LEFT JOIN t_user_role ur ON u.id = ur.user_id
+    LEFT JOIN t_role r  ON ur.role_id = r.id
+    WHERE r.id = #{roleId}
+    ORDER BY  u.id
+
+  </select>
+
+    <select id="findInvitationName" resultType="java.lang.String">
+      select u.nick_name from t_user as u inner join t_channel_invitation as ci on u.id = ci.channel_business_id where ci.invitation_user_id = #{beinvitedId }
+    </select>
+
+  <select id="findUserByRoleId" resultMap="BaseResultMap">
+        SELECT  u.*
+        FROM t_user u
+        LEFT JOIN t_user_role ur ON u.id = ur.user_id
+        LEFT JOIN t_role r  ON ur.role_id = r.id
+        WHERE r.id = #{roleId }
+        <if test="bean.nickName != null and bean.nickName != ''">
+          and u.nick_name like CONCAT('%', #{bean.nickName }, '%')
+        </if>
+    </select>
+
+
+  <update id="updateStatus">
+    update t_user set status = #{status } where id = #{id }
+  </update>
+
+    <select id="getUserByRoleIdAndStatus" resultMap="BaseResultMap">
+    SELECT  u.*
+    FROM t_user u
+    LEFT JOIN t_user_role ur ON u.id = ur.user_id
+    LEFT JOIN t_role r  ON ur.role_id = r.id
+    WHERE r.id = #{roleId} and u.status=0
+    ORDER BY  u.id
+  </select>
+
+    <select id="getCommissionRanking" resultMap="BaseResultMap">
+        select t.*,a.sunCommission from t_user t join (select
+        sum(use_comm) AS sunCommission,
+        service_user_id from app_user_loan_plat where   back_loan_status='1' and coll_date like CONCAT(#{bean.exchangeTimeBegin},'%') group by
+        service_user_id) a on t.id=a.service_user_id
+        where 1=1
+        <if test="bean.nickName!=null and bean.nickName!='' ">
+            and t.nick_name like CONCAT('%',CONCAT(#{bean.nickName},'%') )
+        </if>
+        order by a.sunCommission desc
+    </select>
+
+    <select id="getLoanRanking" resultMap="BaseResultMap">
+        select t.*,a.sunLoan from t_user t join (select
+        sum(use_amount) AS sunLoan,
+        service_user_id from app_user_loan_plat where back_loan_status='1' and coll_date like CONCAT(#{bean.exchangeTimeBegin},'%') group by
+        service_user_id) a on t.id=a.service_user_id
+        where 1=1
+        <if test="bean.nickName!=null and bean.nickName!='' ">
+            and t.nick_name like CONCAT('%',CONCAT(#{bean.nickName},'%') )
+        </if>
+        order by a.sunLoan desc
+    </select>
+
+    <select id="countByTime" resultType="java.lang.Integer">
+        SELECT COUNT(*) from t_user as u
+            INNER JOIN t_user_role as ur on u.id = ur.user_id
+            INNER JOIN t_role as r on ur.role_id = r.id
+            where ur.role_id = #{channelId }
+            <if test="startTime != null and startTime != ''">
+                <![CDATA[ AND u.create_time >= #{startTime }]]>
+            </if>
+            <if test="endTime != null and endTime != ''">
+                <![CDATA[ AND u.create_time <= #{endTime }]]>
+            </if>
+    </select>
+
+    <select id="get" resultMap="BaseResultMap">
+        select * from t_user where id = #{id }
+    </select>
+    
+    <select id="client" resultType="java.lang.Integer">
+      select count(item.count) from (select count(*) as count from t_user as user
+          inner join t_channel_invitation as invitation
+          on user.id = invitation.channel_business_id
+          inner join app_user as appuser
+          on invitation.invitation_user_id = appuser.id
+          inner join user_apply_loan as loan
+          on loan.app_user_id = appuser.id where user.id = #{id } group by loan.app_user_id) as item
+    </select>
+
+    <select id="distribution" resultType="java.lang.Integer">
+      	select count(loan.id) from t_user as user
+          inner join t_channel_invitation as invitation
+          on user.id = invitation.channel_business_id
+          inner join app_user as appuser
+          on invitation.invitation_user_id = appuser.id
+          inner join user_apply_loan as loan
+          on loan.app_user_id = appuser.id where user.id = #{id }
+    </select>
+</mapper>

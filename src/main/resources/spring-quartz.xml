@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx" xmlns:aop="http://www.springframework.org/schema/aop" xmlns:context="http://www.springframework.org/schema/context" xsi:schemaLocation="
+http://www.springframework.org/schema/beans
+http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+http://www.springframework.org/schema/tx
+http://www.springframework.org/schema/tx/spring-tx-4.2.xsd
+http://www.springframework.org/schema/aop
+http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+http://www.springframework.org/schema/context
+http://www.springframework.org/schema/context/spring-context-4.0.xsd">
+
+    <!-- 将我们的 任务类 放入Ioc容器为我们管理 -->
+    <bean id="allLoanJob" class="com.zjht.jfmall.quartz.job.AllLoanJob" />
+
+    <!-- 创建任务 -->
+    <bean id="allLoanDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <!-- 目标对象 -->
+        <property name="targetObject" ref="allLoanJob"/>
+        <!-- 目标方法 -->
+        <property name="targetMethod" value="execute"/>
+    </bean>
+    <!-- 创建CronTrigger触发器 -->
+    <bean id="allLoanTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+        <!-- 引用任务 -->
+        <property name="jobDetail" ref="allLoanDetail"/>
+        <!-- 指定Cron表达式 -->
+        <property name="cronExpression" value="0 */5 * * * ?"/>
+    </bean>
+    <!-- 创建调度器 -->
+    <bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean" id="stdScheduler">
+        <property name="triggers">
+            <list>
+                <ref bean="allLoanTrigger"/>
+            </list>
+        </property>
+    </bean>
+</beans>

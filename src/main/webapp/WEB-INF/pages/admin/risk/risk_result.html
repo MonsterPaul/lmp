@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>会员信息</title>
+    <link rel="stylesheet" href="/resource/layui/css/layui.css"/>
+    <style>
+        .r-content{padding: 0 20px;}
+        .r-content .margin-top-5{margin-top: 5px;}
+    </style>
+</head>
+<body>
+    <div class="r-content">
+        <div class="layui-tab layui-tab-brief">
+            <ul class="layui-tab-title">
+                <li class="layui-this">全景雷达报告总览
+                </li>
+                <li >申请雷达报告详情
+                </li>
+                <li >行为雷达报告详情
+                </li>
+                <li >信用现状报告详情
+                </li>
+            </ul>
+            <div class="layui-tab-content">
+                <div class="layui-tab-item">
+                    <form class="layui-form layui-form-pane" action="">
+                        <div class="layui-inline margin-top-5">
+                            <label class="layui-form-label">响应状态</label>
+                            <div class="layui-input-inline">
+                                <input type="text" value="${success!''}" readonly class="layui-input"  size="40" />
+                            </div>
+                        </div>
+                        &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+                        <div class="layui-inline margin-top-5">
+                            <label class="layui-form-label">错误码</label>
+                            <div class="layui-input-inline">
+                                <input type="text" value="${errorCode!''}" readonly class="layui-input"  size="40" />
+                            </div>
+                        </div>
+                         &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+                        <div class="layui-inline margin-top-5">
+                            <label class="layui-form-label">错误信息</label>
+                            <div class="layui-input-inline">
+                                <input type="text" value="${errorMsg!''}" readonly class="layui-input"  size="40" />
+                            </div>
+                        </div>
+                         &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+                        <br><br>
+                         <div class="layui-inline margin-top-5">
+                            <label class="layui-form-label">姓名</label>
+                            <div class="layui-input-block">
+                                <input type="text" value="${bean.name!''}" readonly class="layui-input" size="40" style="color: red" />
+                            </div>
+                        </div>
+                         &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+                        <div class="layui-inline margin-top-5">
+                            <label class="layui-form-label">身份证</label>
+                            <div class="layui-input-block">
+                                <input type="text" value="${bean.idCard !''}" readonly class="layui-input" size="40" style="color: red"  />
+                            </div>
+                        </div>
+                         &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+                        <div class="layui-inline margin-top-5">
+                            <label class="layui-form-label">收费标示</label>
+                            <div class="layui-input-block">
+                                <input type="text" value="${data.fee!''}" readonly class="layui-input"  size="40" />
+                            </div>
+                        </div>
+                         &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+                        <br><br>
+                         <div class="layui-inline margin-top-5">
+                            <label class="layui-form-label">请求订单号</label>
+                            <div class="layui-input-inline">
+                                <input type="text" value="${data.trans_id!'' }" readonly class="layui-input" size="40" />
+                            </div>
+                        </div>
+                         &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+                        <div class="layui-inline margin-top-5">
+                            <label class="layui-form-label">交易流水号</label>
+                            <div class="layui-input-block">
+                                <input type="text" value="${data.trade_no!'' }" readonly class="layui-input" size="40"/>
+                            </div>
+                        </div>
+                        <br><br>
+                        <div class="layui-inline margin-top-5">
+                            <label class="layui-form-label">查询结果码</label>
+                            <div class="layui-input-inline">
+                                <input type="text" value="${data.code!'' }" readonly class="layui-input" size="40"/>
+                            </div>
+                        </div>
+                         &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+                        <div class="layui-inline margin-top-5">
+                            <label class="layui-form-label">结果描述</label>
+                            <div class="layui-input-inline">
+                                <input type="text" value="${data.desc!'' }" readonly class="layui-input" size="95" style="color: red"  />
+                            </div>
+                        </div>
+                       
+                    </form>
+                </div>
+                <div class="layui-tab-item">
+                    <form class="layui-form layui-form-pane" action="">
+                        <div class="layui-inline margin-top-5">
+                            <label class="layui-form-label"  style="width: 180px">申请准入分</label>
+                            <div class="layui-input-inline">
+                                <input type="text" value="${rapd.apply_score!'' }" readonly class="layui-input" style="color: red;"   />
+                            </div>
+                        </div>
+                        &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+                        <div class="layui-inline margin-top-5">
+                            <label class="layui-form-label"  style="width: 180px">申请准入置信度</label>
+                            <div class="layui-input-inline">
+                                <input type="text" value="${rapd.apply_credibility!'' }" readonly class="layui-input" style="color: red"   />
+                            </div>
+                        </div>
+                        &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+                        <br><br>
+                        <div class="layui-inline margin-top-5">
+                            <label class="layui-form-label"  style="width: 180px">查询机构数</label>
+                            <div class="layui-input-inline">
+                                <input type="text" value="${rapd.query_org_count!'' }" readonly class="layui-input"  />
+                            </div>
+                        </div>
+                        &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+                        <div class="layui-inline margin-top-5">
+                            <label class="layui-form-label"  style="width: 180px">总查询次数</label>
+                            <div class="layui-input-inline">
+                                <input type="text" value="${rapd.query_sum_count!'' }" readonly class="layui-input"  style="color: red"  />
+                            </div>
+                        </div>
+                        <br><br>
+                        <div class="layui-inline margin-top-5">
+                            <label class="layui-form-label" style="width: 180px">查询消费金融类机构数</label>
+                            <div class="layui-input-inline">
+                                <input type="text" value="${rapd.query_finance_count!'' }" readonly class="layui-input"  />
+                            </div>
+                        </div>
+                        &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+                        <div class="layui-inline margin-top-5">
+                            <label class="layui-form-label" style="width: 180px" >查询网络贷款类机构数</label>
+                            <div class="layui-input-inline">
+                                <input type="text" value="${rapd.query_cash_count!'' }" readonly class="layui-input" />
+                            </div>
+                        </div>
+                        &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+                         <br><br>
+                        <div class="layui-inline margin-top-5">
+                            <label class="layui-form-label" style="width: 180px">最近查询时间</label>
+                            <div class="layui-input-inline">
+                                <input type="text" value="${rapd.latest_query_time!'' }" readonly class="layui-input"  />
+                            </div>
+                        </div>
+                        &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+                        <div class="layui-inline margin-top-5">
+                            <label class="layui-form-label" style="width: 180px" >近1个月总查询笔数</label>
+                            <div class="layui-input-inline">
+                                <input type="text" value="${rapd.latest_one_month!'' }" readonly class="layui-input" />
+                            </div>
+                        </div>
+                        &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+                         <br><br>
+                        <div class="layui-inline margin-top-5">
+                            <label class="layui-form-label" style="width: 180px">近3个月总查询笔数</label>
+                            <div class="layui-input-inline">
+                                <input type="text" value="${rapd.latest_three_month!'' }" readonly class="layui-input"  />
+                            </div>
+                        </div>
+                        &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+                        <div class="layui-inline margin-top-5">
+                            <label class="layui-form-label" style="width: 180px" >近6个月总查询笔数</label>
+                            <div class="layui-input-inline">
+                                <input type="text" value="${rapd.latest_six_month!'' }" readonly class="layui-input" />
+                            </div>
+                        </div>
+                        &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+                         <br><br>
+                    </form>
+                </div>
+                <div class="layui-tab-item">
+                    <form class="layui-form layui-form-pane" action="">
+                        <div class="layui-inline margin-top-5">
+                            <label class="layui-form-label" style="width: 230px">贷款行为分</label>
+                            <div class="layui-input-inline">
+                                <input type="text" value="${(rbpd.loans_score)!'' }" readonly class="layui-input" style="color: red"  />
+                            </div>
+                        </div>
+                        &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+                        <div class="layui-inline margin-top-5">
+                            <label class="layui-form-label" style="width: 230px">贷款行为置信度</label>
+                            <div class="layui-input-inline">
+                                <input type="text" value="${(rbpd.loans_credibility)!'' }" readonly class="layui-input" style="color: red"  />
+                            </div>
+                        </div>
+                         &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+                        <div class="layui-inline margin-top-5">
+                            <label class="layui-form-label" style="width: 230px">贷款放款总订单数</label>
+                            <div class="layui-input-inline">
+                                <input type="text" value="${(rbpd.loans_count)!'' }" readonly class="layui-input" style="color: red"  />
+                            </div>
+                        </div>
+                        <br><br>
+                        <div class="layui-inline margin-top-5">
+                            <label class="layui-form-label" style="width: 230px">贷款已结清订单数</label>
+                            <div class="layui-input-inline">
+                                <input type="text" value="${(rbpd.loans_settle_count)!'' }" readonly class="layui-input" />
+                            </div>
+                        </div>
+                        &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+                        <div class="layui-inline margin-top-5">
+                            <label class="layui-form-label" style="width: 230px">贷款逾期订单数（M0+）</label>
+                            <div class="layui-input-inline">
+                                <input type="text" value="${(rbpd.loans_overdue_count)!'' }" readonly class="layui-input" style="color: red"   />
+                            </div>
+                        </div>
+                          &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+                        <div class="layui-inline margin-top-5">
+                            <label class="layui-form-label" style="width: 230px">贷款机构数</label>
+                            <div class="layui-input-inline">
+                                <input type="text" value="${(rbpd.loans_org_count)!'' }" readonly class="layui-input" />
+                            </div>
+                        </div>
+                         <br><br>
+                       
+                        <div class="layui-inline margin-top-5">
+                            <label class="layui-form-label" style="width: 230px">消费金融类机构数</label>
+                            <div class="layui-input-inline">
+                                <input type="text" value="${(rbpd.consfin_org_count)!'' }" readonly class="layui-input" />
+                            </div>
+                        </div>
+                          &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+                        <div class="layui-inline margin-top-5">
+                            <label class="layui-form-label" style="width: 230px">网络贷款类机构数</label>
+                            <div class="layui-input-inline">
+                                <input type="text" value="${(rbpd.loans_cash_count)!'' }" readonly class="layui-input" />
+                            </div>
+                        </div>
+                          &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+                        <div class="layui-inline margin-top-5">
+                            <label class="layui-form-label" style="width: 230px">近1个月贷款笔数</label>
+                            <div class="layui-input-inline">
+                                <input type="text" value="${(rbpd.latest_one_month)!'' }" readonly class="layui-input" />
+                            </div>
+                        </div>
+                        <br><br>
+                        <div class="layui-inline margin-top-5">
+                            <label class="layui-form-label" style="width: 230px">近3个月贷款笔数</label>
+                            <div class="layui-input-inline">
+                                <input type="text" value="${(rbpd.latest_three_month)!'' }" readonly class="layui-input" />
+                            </div>
+                        </div>
+                          &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+                        <div class="layui-inline margin-top-5">
+                            <label class="layui-form-label" style="width: 230px">近6个月贷款笔数</label>
+                            <div class="layui-input-inline">
+                                <input type="text" value="${(rbpd.latest_six_month)!'' }" readonly class="layui-input" />
+                            </div>
+                        </div>
+                          &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+                        <div class="layui-inline margin-top-5">
+                            <label class="layui-form-label" style="width: 230px">历史贷款机构成功扣款笔数</label>
+                            <div class="layui-input-inline">
+                                <input type="text" value="${(rbpd.history_suc_fee)!'' }" readonly class="layui-input" style="color: red"   />
+                            </div>
+                        </div>
+                        <br><br>
+                        <div class="layui-inline margin-top-5">
+                            <label class="layui-form-label" style="width: 230px">历史贷款机构失败扣款笔数</label>
+                            <div class="layui-input-inline">
+                                <input type="text" value="${(rbpd.history_fail_fee)!'' }" readonly class="layui-input" style="color: red"  />
+                            </div>
+                        </div>
+                          &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+                        <div class="layui-inline margin-top-5">
+                            <label class="layui-form-label" style="width: 230px">近1个月贷款机构成功扣款笔数</label>
+                            <div class="layui-input-inline">
+                                <input type="text" value="${(rbpd.latest_one_month_suc)!'' }" readonly class="layui-input" />
+                            </div>
+                        </div>
+                          &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+                        <div class="layui-inline margin-top-5">
+                            <label class="layui-form-label" style="width: 230px">近1个月贷款机构失败扣款笔数</label>
+                            <div class="layui-input-inline">
+                                <input type="text" value="${(rbpd.latest_one_month_fail)!'' }" readonly class="layui-input" />
+                            </div>
+                        </div>
+                          <br><br>
+                        <div class="layui-inline margin-top-5">
+                            <label class="layui-form-label" style="width: 230px">信用贷款时长</label>
+                            <div class="layui-input-inline">
+                                <input type="text" value="${(rbpd.loans_long_time)!'' }" readonly class="layui-input" />
+                            </div>
+                        </div>
+                          &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+                        <div class="layui-inline margin-top-5">
+                            <label class="layui-form-label" style="width: 230px">最近一次贷款时间</label>
+                            <div class="layui-input-inline">
+                                <input type="text" value="${(rbpd.loans_latest_time)!'' }" readonly class="layui-input" />
+                            </div>
+                        </div>
+                    </form>
+                    <table id="operator" lay-filter="tableFilter"></table>
+                </div>
+                
+                
+                <div class="layui-tab-item">
+                    <form class="layui-form layui-form-pane" action="">
+                        <div class="layui-inline margin-top-5">
+                            <label class="layui-form-label" style="width: 230px">网贷建议授信额度</label>
+                            <div class="layui-input-inline">
+                                <input type="text" value="${rcpd.loans_credit_limit!'' }" readonly class="layui-input" style="color: red"  />
+                            </div>
+                        </div>
+                         &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+                        <div class="layui-inline margin-top-5">
+                            <label class="layui-form-label" style="width: 230px">网贷额度置信度</label>
+                            <div class="layui-input-inline">
+                                <input type="text" value="${rcpd.loans_credibility!'' }" readonly class="layui-input" style="color: red"  />
+                            </div>
+                        </div>
+						<br><br>                   
+                        <div class="layui-inline margin-top-5">
+                            <label class="layui-form-label" style="width: 230px">网络贷款类机构数</label>
+                            <div class="layui-input-inline">
+                                <input type="text" value="${rcpd.loans_org_count!'' }" readonly class="layui-input" />
+                            </div>
+                        </div>
+                         &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+                        <div class="layui-inline margin-top-5">
+                            <label class="layui-form-label" style="width: 230px">网络贷款类产品数</label>
+                            <div class="layui-input-inline">
+                                <input type="text" value="${rcpd.loans_product_count!'' }" readonly class="layui-input" />
+                            </div>
+                        </div>
+                        <br><br>
+                        <div class="layui-inline margin-top-5">
+                            <label class="layui-form-label" style="width: 230px">网络贷款机构最大授信额度</label>
+                            <div class="layui-input-inline">
+                                <input type="text" value="${rcpd.loans_max_limit!'' }" readonly class="layui-input" />
+                            </div>
+                        </div>
+                         &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+                        <div class="layui-inline margin-top-5">
+                            <label class="layui-form-label" style="width: 230px">网络贷款机构平均授信额度</label>
+                            <div class="layui-input-inline">
+                                <input type="text" value="${rcpd.loans_avg_limit!'' }" readonly class="layui-input" style="color: red"  />
+                            </div>
+                        </div>
+                        <br><br>
+                        
+                        <div class="layui-inline margin-top-5">
+                            <label class="layui-form-label" style="width: 230px">消金建议授信额度</label>
+                            <div class="layui-input-inline">
+                                <input type="text" value="${rcpd.consfin_credit_limit!'' }" readonly class="layui-input" />
+                            </div>
+                        </div>
+                         &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+                        <div class="layui-inline margin-top-5">
+                            <label class="layui-form-label" style="width: 230px">消金额度置信度</label>
+                            <div class="layui-input-inline">
+                                <input type="text" value="${rcpd.consfin_credibility!'' }" readonly class="layui-input" />
+                            </div>
+                        </div>
+                        <br><br>
+                        <div class="layui-inline margin-top-5">
+                            <label class="layui-form-label" style="width: 230px">消费金融类机构数</label>
+                            <div class="layui-input-inline">
+                                <input type="text" value="${rcpd.consfin_org_count!'' }" readonly class="layui-input" />
+                            </div>
+                        </div>
+                         &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+                        <div class="layui-inline margin-top-5">
+                            <label class="layui-form-label" style="width: 230px">消费金融类产品数</label>
+                            <div class="layui-input-inline">
+                                <input type="text" value="${rcpd.consfin_product_count!'' }" readonly class="layui-input" />
+                            </div>
+                        </div>
+                        <br><br>
+                        <div class="layui-inline margin-top-5">
+                            <label class="layui-form-label" style="width: 230px">消费金融类机构最大授信额度</label>
+                            <div class="layui-input-inline">
+                                <input type="text" value="${rcpd.consfin_max_limit!'' }" readonly class="layui-input" />
+                            </div>
+                        </div>
+                         &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+                        <div class="layui-inline margin-top-5">
+                            <label class="layui-form-label" style="width: 230px">消费金融类机构平均授信额度</label>
+                            <div class="layui-input-inline">
+                                <input type="text" value="${rcpd.consfin_avg_limit!'' }" readonly class="layui-input" />
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="layui-tab-item layui-show">
+                    <table id="page" lay-filter="tableFilter"></table>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+<!-- js方法，分页，搜索时候部分参数需要重新赋值-->
+<script type="text/jscript" src="/resource/js/common/jquery-3.1.1.min.js"></script>
+<script src="/resource/layui/layui.js"></script>
+<script>
+    layui.use(['element', 'form', 'jquery','table'], function() {
+        var element = layui.element;
+        var form = layui.form;
+        var $ = layui.jquery;
+        var table = layui.table;
+    });
+</script>
+</html>

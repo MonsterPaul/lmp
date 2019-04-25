@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zjht.jfmall.dao.UserFollowRecordMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.zjht.jfmall.entity.UserFollowRecord">
+        <id column="id" property="id" />
+        <result column="app_user_id" property="appUserId" />
+        <result column="follow_date" property="followDate" />
+        <result column="follow_content" property="followContent" />
+        <result column="follow_user_id" property="followUserId" />
+        <result column="record_id" property="recordId" />
+        <result column="plat_id" property="platId" />
+
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, app_user_id AS appUserId, follow_date AS followDate, follow_content AS followContent, follow_user_id AS followUserId,record_id AS recordId
+    </sql>
+
+    <select id="count" resultType="java.lang.Integer">
+        select count(*) from user_follow_record where record_id = #{recordId } and follow_user_id = #{userId } and plat_id = #{platId }
+    </select>
+
+</mapper>

@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>贷款大全</title>
+    <link rel="stylesheet" href="/resource/layui/css/layui.css"/>
+    <style>
+        .r-content{padding: 0 20px;}
+        .r-content div{margin: 0;}
+        .r-btn-area div{margin-bottom: 0; border-right: 1px solid #e2e2e2; border-top: 1px solid #e2e2e2; padding: 5px;}
+        .r-search{margin: 10px 20px 0;}
+    </style>
+</head>
+<body>
+    <!-- 搜索区域-->
+    <div class="layui-collapse r-search">
+        <div class="layui-colla-item">
+            <h2 class="layui-colla-title">搜索</h2>
+            <div class="layui-colla-content layui-show">
+                <form id="roleSearchForm" action="/admin/allLoan/statistics.do?bizCode=${bizCode}" method="post">
+                    <div class="layui-form-item" style="display: inline-block; margin-bottom: 0;">
+                        <label class="layui-form-label" style="width: 70px;">名称</label>
+                        <div class="layui-input-block" style="margin-left: 100px;">
+                            <input type="text" id="name" name="name" value="${bean.name!''}" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label width70">状态:</label>
+                        <select id="status" name="status" class="layui-input" style="width: 220px;" >
+                            <option value="">请选择</option>
+                            <option value="0" <#if bean.status?? && bean.status == '0'>selected</#if>>上架</option>
+                            <option value="1" <#if bean.status?? && bean.status == '1'>selected</#if>>下架</option>
+                        </select>
+                    </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label width70">置顶状态:</label>
+                        <select id="top" name="top" class="layui-input" style="width: 220px;" >
+                            <option value="">请选择</option>
+                            <option value="0" <#if bean.top?? && bean.top == '0'>selected</#if>>置顶</option>
+                            <option value="1" <#if bean.top?? && bean.top == '1'>selected</#if>>不置顶</option>
+                        </select>
+                    </div>
+                    <div class="layui-inline">
+                        <label>添加时间:</label>
+                        <div class="layui-inline">
+                            <#if  bean.exchangeTimeBegin??>
+                                    <input type="text" class="layui-input test-item" name="exchangeTimeBegin" value="${bean.exchangeTimeBegin }">
+                                <#else>
+                                    <input type="text" class="layui-input test-item" name="exchangeTimeBegin" placeholder="请选择">
+                            </#if>
+                        </div>
+                        至
+                        <div class="layui-inline">
+                            <#if  bean.exchangeTimeEnd??>
+                                    <input type="text" class="layui-input test-item" name="exchangeTimeEnd" value="${bean.exchangeTimeEnd }">
+                                <#else>
+                                    <input type="text" class="layui-input test-item" name="exchangeTimeEnd" placeholder="请选择">
+                            </#if>
+                        </div>
+                    </div>
+                    <button style="margin-top: -3px;" class="layui-btn">搜索</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- 内容区域-->
+    <div id="r-content" class="r-content">
+        <!-- 分页容器-->
+        <table id="page" lay-filter="tableFilter"></table>
+    </div>
+</body>
+
+<!-- js方法，分页，搜索时候部分参数需要重新赋值-->
+<script type="text/jscript" src="/resource/js/common/jquery-3.1.1.min.js"></script>
+<script src="/resource/layui/layui.js"></script>
+<!--搜索区域JS-->
+<script type="text/html" id="operateBar">
+    <a class="layui-btn layui-btn-mini layui-btn-normal" lay-event="detail">查看</a>
+</script>
+<script type="text/html" id="titleTpl1">
+    <div>{{d.LAY_TABLE_INDEX + 1}}</div>
+</script>
+<!-- 分页JS-->
+<script>
+    layui.use(['jquery','table','form','element', 'laydate'], function(){
+        var form = layui.form;
+        var $ = layui.jquery;
+        var table = layui.table;
+        var element = layui.element;
+        var laydate = layui.laydate;
+        //执行渲染
+        var tableIns = table.render({
+            id:'dataTable',
+            elem: '#page', //指定原始表格元素选择器（推荐id选择器）
+            page: true,
+            even: true,
+            cols:  [[ //标题栏
+                {field: 'name', title: '平台名称', width: 100}
+                ,{field: 'typeStr', title: '类型', width: 100}
+                ,{field: 'statusStr', title: '状态', width: 70}
+                ,{field: 'user.nickName', title: '运营人员', width: 100}
+                ,{field: 'pillWay', title: '计费方式', width: 100}
+                ,{field: 'price', title: '价格', width: 100}
+                ,{field: 'balance', title: '余额', width: 100}
+                ,{field: 'uv', title: 'UV', width: 100}
+                ,{field: 'countNum', title: '申请人数', width: 100}
+                ,{field: 'conversionRate', title: '转化率(%)', width: 150}
+                ,{fixed: 'right', title: '申请详情', width:100, align:'center', toolbar: '#operateBar'}
+            ]],
+            url: '/admin/allLoan/list.json',
+            method:'POST',
+            where : {
+                bizCode: '${bizCode }01',
+                name: "${bean.name!''}",
+                status: "${bean.status!''}",
+                top: "${bean.top!''}",
+                exchangeTimeBegin: "${bean.exchangeTimeBegin!'' }",
+                exchangeTimeEnd: "${bean.exchangeTimeEnd!'' }"
+            },
+            limits: layui.globalConfig.limits,
+            limit: 20,
+            request: {
+                pageName: 'pageNum', //页码的参数名称，默认：page
+                limitName: 'pageSize', //每页数据量的参数名，默认：limit
+            },
+            response: {
+                statusName: 'status',
+                statusCode: '00000', //成功的状态码，默认：0
+                msgName: 'msg', //状态信息的字段名称，默认：msg
+                countName: 'count', //数据总数的字段名称，默认：count
+                dataName: 'data'
+            }
+        });
+        //监听工具条
+        table.on('tool(tableFilter)', function(obj){
+            var data = obj.data;
+            if (obj.event === 'detail') {
+                //异步请求返回页面
+                var item = layer.open({
+                    type: 2 //返回iframe类型
+                    ,title: '详情'
+                    ,area: ['700px', '560px']//窗口大小
+                    ,shade: 0.3//显示透明罩效果
+                    ,maxmin: true
+                    ,btnAlign: 'c'//按钮位置居中
+                    ,btn: [] //按钮
+                    ,content: '/admin/allLoan/record.do?bizCode=${bizCode}&id='+ data.id
+                    ,zIndex: 999 //重点1：层级
+                    ,success: function(layero, index){//参数1：当前dom,参数2：索引
+                        layer.setTop(layero); //重点2
+                    }
+                });
+                layer.full(item);
+            }
+        });
+
+        lay('.test-item').each(function () {
+            laydate.render({
+                elem: this
+                , trigger: 'click'
+            });
+        })
+        //添加事件//编辑事件//删除事件//
+        $('#operButDiv button, .save').on('click', function() {
+            var $othis = $(this), $method = $othis.data('method');
+            active[$method] ? active[$method].call(this, $othis) : '';
+        });
+    });
+
+</script>
+
+</html>

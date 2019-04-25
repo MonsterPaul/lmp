@@ -1,0 +1,4 @@
+ALTER TABLE app_user ADD COLUMN pwd VARCHAR (15) DEFAULT NULL COMMENT '密码'
+
+ALTER TABLE  t_user_feedback ADD COLUMN process_remark VARCHAR (200) DEFAULT NULL COMMENT '处理结果'# 20181130
+alter table advertisement add column name varchar(50) comment '广告名称';

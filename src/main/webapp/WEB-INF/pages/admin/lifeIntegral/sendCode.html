@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>商户登录</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+<meta name="format-detection" content="telephone=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="stylesheet" href="/resource/webapp/lifeintegral/css/base.css">
+    <link rel="stylesheet" href="/resource/webapp/lifeintegral/css/def.css">
+    <script src="/resource/js/common/jquery-3.1.1.min.js"></script>
+    <script src="/resource/webapp/lifeintegral/js/global.js"></script>
+</head>
+<body bgcolor="#146e2e">
+
+<header class="login-infor">
+    <img src="/resource/webapp/lifeintegral/images/local/login-user.png">
+    <p>${member.nickName }</p>
+</header>
+<form id="subBut" method="post">
+<section class="select-infor">
+    <ul>
+        <li>
+            <span class="txt fl">电子码面值</span>
+            <select class="sel" id="points" name="points" lay-verify="required">
+                <option value="">请选择面值</option>
+                <#list pointsMap?values as value>
+                    <option value="${value}">${value!""}</option>
+                </#list>
+            </select>
+        </li>
+        <li>
+            <span class="txt fl">消费有效期</span>
+            <select class="sel" id="expireTime" name="expireTime">
+                <option value="6">6个月</option>
+            </select>
+        </li>
+    </ul>
+</section>
+
+<section class="form-infor">
+    <dl>
+        <dt><a class="del fr hide" href="javascript:;">点击删除用户<i></i></a>发送手机号码</dt>
+        <dd>
+            <img class="icon" src="/resource/webapp/lifeintegral/images/icons/tel.jpg"></i>
+            <input class="ipt" name="mobile" type="text" placeholder="请输入手机号码" maxlength="11">
+        </dd>
+        <dt>备注说明</dt>
+        <dd>
+            <img class="icon" src="/resource/webapp/lifeintegral/images/icons/remark.jpg"></i>
+            <input class="ipt" name="remark" type="text" placeholder="请输入备注说明" maxlength="256">
+        </dd>
+    </dl>
+</section>
+
+<section class="form-btn">
+    <div id="add-user" class="add tc" href="javascript:;">点击新增用户<i></i></div>
+    <button class="btn" id="sendBut" onclick="return false;">发送</button>
+    <@p.permission bizCode='j010108'>
+    <button class="btn" id="abandonedCode" >电子码作废</button>
+    </@p.permission>
+    <button class="btn" id="logoutBut">退出登录</button>
+</section>
+</form>
+<script src="/resource/layui/layui.all.js"></script>
+<script>
+    $(function(){
+        $('#add-user').click(function(){
+            var dlHtml = $('.form-infor').find('dl:eq(0)').clone();
+                dlHtml.find('.ipt').val('');
+            $('.form-infor').append(dlHtml);
+            dlHtml.find('.del').removeClass('hide').click(function(){
+                $(this).closest('dl').remove();
+            });
+        });
+        var subFlag = false;
+        $("#sendBut").click(function () {
+            if(subFlag){
+                alert("正在处理，请勿重复提交");
+                return false;
+            }
+            var expireTime = $("#expireTime").val();
+            var points = $("#points").val();
+            if(!points){
+                alert("请选择面值");
+                return false;
+            }
+            var params = getMobileAndRemark();
+            if(params.length==0){
+                return false;
+            }
+            var url = "/admin/lifeIntegral/electronicCode/o_createAndSend.do?bizCode=j010105";
+            subFlag = true;
+            $.ajax({
+                url: url,
+                type: "POST",
+                data: {"params": JSON.stringify(params), "expireTime": expireTime, "points": points},
+                dataType: "JSON",
+                success: function (data) {
+                    subFlag = false;
+                    alert(data.msg);
+                },
+                error:function () {
+                    subFlag = false;
+                    alert("服务器内部错误");
+                }
+            });
+            return false;
+        });
+        $("#logoutBut").click(function () {
+            location.href="logout.do";
+            return false;
+        });
+        $("#abandonedCode").click(function(){
+            location.href="selectAbandonedCode.html";
+            return false;
+        });
+    });
+    //获取所有的电话号码和备注
+    function getMobileAndRemark() {
+        var params = [];
+        $(".form-infor dl").each(function () {
+                var param = new Object();
+                var mobile = $(this).find("[name='mobile']").val()
+                if(mobile == ""){
+                    alert("手机号为空");
+                    $(this).find("[name='mobile']").focus();
+                    params = [];
+                    return ;
+                }
+                param.mobile = mobile;
+                param.remark = $(this).find("[name='remark']").val();
+                params.push(param);
+            }
+        );
+        return params;
+    }
+ </script>
+
+</body>
+</html>

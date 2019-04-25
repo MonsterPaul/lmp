@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>礼包服务商场</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+	<meta name="format-detection" content="telephone=no">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black">
+	<link rel="stylesheet" href="/resource/webapp/lifeintegral/css/base.css">
+	<link rel="stylesheet" href="/resource/webapp/lifeintegral/css/def.css">
+	<script src="/resource/js/common/jquery-3.1.1.min.js"></script>
+	<script src="/resource/webapp/lifeintegral/js/global.js"></script>
+</head>
+<body class="brown-color">
+	<section class="banner-things">
+		<img src="${product.productDetailPath!''}">
+	</section>
+	<section class="things-message">
+		<div class="tt">
+			<p>所需兑换礼包额：<span>${product.points}</span></p>
+		</div>
+		<div class="mes">
+			<div class="title">
+				<span>兑换方式</span>
+			</div>
+			<div class="txt flex flex-j">
+				<p>${product.productName!''}</p>
+				<div class="price">
+					<p><span>${product.salePrice}</span>元<i id="selected"></i></p>
+				</div>
+			</div>
+		</div>
+		<div class="other">
+			<a href="javascript:;" class="confirm-exchange">确定兑换</a>
+			${product.introduction!''}
+		</div>
+	</section>
+
+	<script>
+		$('.things-message .txt .price').click(function(){
+			$(this).find('i').toggleClass("select");
+		});
+		var subFlag = false;
+        $('.confirm-exchange').click(function(){
+            if(!$("#selected").hasClass("select")){
+                alert("请勾选兑换产品！");
+                return false;
+			}
+			if(subFlag){
+                alert("处理中，请勿重复提交");
+                return false;
+			}
+            subFlag = true;
+			$.post("exchange.do",{productCode: '${product.productCode}'},function(data){
+			    if(data.status=="00004"){
+			        alert("0004");
+                    window.location.href = "/webapp/lifeIntegral/index.html";
+					return ;
+				}
+                if (data.status != "00000") {
+                    alert(data.msg);
+                    return;
+                }
+                var orderNo = data.data.orderNo;
+                window.location.href = "/webapp/lifeIntegral/result.html?orderNo="+orderNo;
+			},"json").fail(function () {
+                subFlag = false;
+				alert("服务器处理错误");
+            });
+        });
+	</script>
+</body>
+</html>

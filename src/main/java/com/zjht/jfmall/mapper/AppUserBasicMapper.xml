@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zjht.jfmall.dao.AppUserBasicMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.zjht.jfmall.entity.AppUserBasic">
+        <id column="id" property="id" />
+        <result column="app_user_id" property="appUserId" />
+        <result column="name" property="name" />
+        <result column="id_card" property="idCard" />
+        <result column="gender" property="gender" />
+        <result column="age" property="age" />
+        <result column="constellation" property="constellation" />
+        <result column="province" property="province" />
+        <result column="city" property="city" />
+        <result column="region" property="region" />
+        <result column="native_place" property="nativePlace" />
+        <result column="mobile" property="mobile" />
+        <result column="carrier_name" property="carrierName" />
+        <result column="carrier_idcard" property="carrierIdcard" />
+        <result column="reg_time" property="regTime" />
+        <result column="in_time" property="inTime" />
+        <result column="email" property="email" />
+        <result column="address" property="address" />
+        <result column="reliability" property="reliability" />
+        <result column="phone_attribution" property="phoneAttribution" />
+        <result column="live_address" property="liveAddress" />
+        <result column="available_balance" property="availableBalance" />
+        <result column="package_name" property="packageName" />
+        <result column="bill_certification_day" property="billCertificationDay" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, app_user_id AS appUserId, name, id_card AS idCard, gender, age,
+         constellation, province, city, region, native_place AS nativePlace, mobile,
+          carrier_name AS carrierName, carrier_idcard AS carrierIdcard, reg_time AS regTime, in_time AS inTime, email, address, reliability, phone_attribution AS phoneAttribution, live_address AS liveAddress, available_balance AS availableBalance, package_name AS packageName, bill_certification_day AS billCertificationDay
+    </sql>
+
+    <select id="findByAppId" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List" /> from app_user_basic where app_user_id = #{id }
+    </select>
+
+</mapper>

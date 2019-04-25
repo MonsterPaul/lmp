@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>商户登录</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+<meta name="format-detection" content="telephone=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<link rel="stylesheet" href="/resource/webapp/lifeintegral/css/base.css">
+<link rel="stylesheet" href="/resource/webapp/lifeintegral/css/def.css">
+<script src="/resource/js/common/jquery-3.1.1.min.js"></script>
+<script src="/resource/webapp/lifeintegral/js/global.js"></script>
+</head>
+<body bgcolor="#146e2e">
+
+<header class="login-banner"><img src="/resource/webapp/lifeintegral/images/local/login-banner.jpg"></header>
+
+<section class="form-content">
+    <form id="subform" method="post">
+        <ul>
+            <li>
+                <img src="/resource/webapp/lifeintegral/images/icons/user.jpg" class="icon">
+                <input id="userName" name="userName" type="text" placeholder="账户" class="ipt" type="text" maxlength="15">
+            </li>
+            <li>
+                <img src="/resource/webapp/lifeintegral/images/icons/pwd.jpg" class="icon">
+                <input id="password" name="password" type="password" class="ipt" type="text" placeholder="请输入登录密码" maxlength="18">
+            </li>
+            <li>
+                <img src="/resource/webapp/lifeintegral/images/icons/code.jpg" class="icon">
+                <input id="logincode" name="logincode" class="ipt" type="text" placeholder="请输入验证码" maxlength="4">
+                <a href="javascript:changeCode();"><img id="code" src="/admin/index/getCode.do" class="ver"></a>
+            </li>
+        </ul>
+        <button id="subBut" class="btn">登录</button>
+    </form>
+</section>
+<script>
+    $("#subBut").click(function () {
+        if(!$("#userName").val()){
+            alert("请输入账户");
+            return false;
+        }
+        if(!$("#password").val()){
+            alert("请输入登陆密码");
+            return false;
+        }
+        if(!$("#logincode").val()){
+            alert("请输入验证码");
+            return false;
+        }
+        $.post(
+            "/admin/lifeIntegral/login.do",
+            $("#subform").serialize(),
+            function(data){
+                if(data.status=="00000"){
+                    location.href="sendCode.html?bizCode=j010106";
+                }else{
+                    alert(data.msg);
+                }
+            },"json");
+        return false;
+    });
+    function changeCode(){
+        var getTimestamp=new Date().getTime();
+        $("#code").attr("src","/admin/index/getCode.do?timestamp="+getTimestamp);
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zjht.jfmall.dao.AppUserDepositMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.zjht.jfmall.entity.AppUserDeposit">
+        <id column="id" property="id" />
+        <result column="app_user_id" property="appUserId" />
+        <result column="amount" property="amount" />
+        <result column="apply_date" property="applyDate" />
+        <result column="deposit_date" property="depositDate" />
+        <result column="opertion_id" property="opertionId" />
+        <result column="status" property="status" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, app_user_id AS appUserId, amount, apply_date AS applyDate, deposit_date AS depositDate, opertion_id AS opertionId, status
+    </sql>
+    
+    <select id="findPage" resultMap="BaseResultMap">
+        select d.* from app_user_deposit as d
+        inner join app_user as a on d.app_user_id = a.id
+        <where>
+            <if test="bean.appUser.name != null and bean.appUser.name != ''">
+              and a.name like CONCAT('%', #{bean.appUser.name },'%')
+            </if>
+            <if test="bean.appUser.phone != null and bean.appUser.phone != ''">
+                and a.phone like CONCAT('%', #{bean.appUser.phone },'%')
+            </if>
+            <if test="bean.exchangeTimeBegin != null and bean.exchangeTimeBegin != ''">
+                <![CDATA[  and d.apply_date >= '${bean.exchangeTimeBegin} 00:00:00'  ]]>
+            </if>
+            <if test="bean.exchangeTimeEnd != null and bean.exchangeTimeEnd != ''">
+                <![CDATA[  and d.apply_date <=  '${bean.exchangeTimeEnd} 23:59:59']]>
+            </if>
+        </where>
+        order by d.deposit_date desc
+    </select>
+
+    <update id="updateStatus">
+        update app_user_deposit set `status` = #{status }, opertion_id = #{oprationId} where id = #{id }
+    </update>
+
+    <select id="getCashWithdrawal" resultMap="BaseResultMap">
+        SELECT * FROM app_user_deposit WHERE app_user_id=#{id} order by apply_date desc limit ${(num-1)*size},${size}
+    </select>
+
+    <select id="countUser" resultType="java.lang.Integer">
+        select count(t.id) from t_app_user_invitation as t inner join app_user as u
+          on t.invitation_id = u.id
+          where t.data_status = 1 and t.iden_status = 1 and t.operator_status = 1
+          and t.invitation_id = #{id }
+    </select>
+
+    <select id="sumAmount" resultType="java.lang.Double">
+        select sum(t.invitation_money) from t_app_user_invitation as t inner join app_user as u
+          on t.invitation_id = u.id
+          where t.data_status = 1 and t.iden_status = 1 and t.operator_status = 1
+          and t.invitation_id = #{id }
+    </select>
+
+    <select id="find" resultMap="BaseResultMap">
+      select d.* from app_user_deposit as d
+        inner join app_user as a on d.app_user_id = a.id where d.app_user_id = #{bean.appUserId }
+    </select>
+
+</mapper>

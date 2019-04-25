@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>首页</title>
+	<style>
+		.h2{font-size: 20px; font-weight: normal; color: #666;}
+		.h3{font-size: 18px; font-weight: normal; color: #666;}
+	</style>
+</head>
+<body>
+	<h2 class="h2">欢迎使用 九信贷款 后台系统</h2>
+	<h3 class="h3">登录次数：${loginCount!0 }</h3>
+	<h3 class="h3">上次登录IP：${loginIP!"" } 上次登录时间：<#if loginTime??>${loginTime?string("yyyy-MM-dd HH:mm:ss") }</#if></h3>
+</body>
+</html>

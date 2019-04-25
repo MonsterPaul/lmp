@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>渠道列表</title>
+    <link rel="stylesheet" href="/resource/layui/css/layui.css"/>
+    <style>
+        .r-content{padding: 0 20px;}
+        .r-content div{margin: 0;}
+        .r-btn-area{margin-top: 10px;}
+        .r-btn-area div{margin-bottom: 0; border-right: 1px solid #e2e2e2; border-top: 1px solid #e2e2e2; padding: 5px;}.r-search{margin: 10px 20px 0;}
+        .r-search{margin: 10px 20px 0;}
+    </style>
+</head>
+<body>
+    <!-- 搜索区域-->
+    <div class="layui-collapse r-search">
+        <div class="layui-colla-item">
+            <h2 class="layui-colla-title">搜索</h2>
+            <div class="layui-colla-content layui-show">
+                <form id="roleSearchForm" action="/admin/cw/cw_deposit_list.do?bizCode=${bizCode}" method="post">
+                    <div class="layui-form-item" style="display: inline-block; margin-bottom: 0;">
+                        <label class="layui-form-label" style="width: 70px;">渠道名称</label>
+                        <div class="layui-input-block" style="margin-left: 100px;">
+                            <input type="text" id="nickName" name="nickName" value="${bean.nickName!'' }" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item" style="display: inline-block; margin-bottom: 0;">
+                        <label class="layui-form-label" style="width: 70px;">渠道账号</label>
+                        <div class="layui-input-block" style="margin-left: 100px;">
+                            <input type="text" id="username" name="username" value="${bean.username!'' }" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <br>
+                    <div class="layui-form-item" style="display: inline-block; margin-bottom: 0;">
+                        <label class="layui-form-label" style="width: 70px;">手机号码</label>
+                        <div class="layui-input-block" style="margin-left: 100px;">
+                            <input type="text" id="mobile" name="mobile" value="${bean.mobile!'' }" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item" style="display: inline-block; margin-bottom: 0;">
+                        <label class="layui-form-label" style="width: 70px;">推广员名称</label>
+                        <div class="layui-input-block" style="margin-left: 100px;">
+                            <input type="text" id="tgyName" name="tgyName" value="${bean.tgyName!'' }" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <br>
+                    <div class="layui-form-item" style="display: inline-block; margin-bottom: 0; margin-top: 10px;margin-left: 33px;">
+                        <label>指定时间:</label>
+                        <div class="layui-inline">
+                            <#if bean.exchangeTimeBegin??>
+                                <input type="text" class="layui-input test-item" name="exchangeTimeBegin" value="${bean.exchangeTimeBegin }">
+                                <#else>
+                                    <input type="text" class="layui-input test-item" name="exchangeTimeBegin" placeholder="请选择">
+                            </#if>
+                        </div>
+                        至
+                        <div class="layui-inline">
+                            <#if bean.exchangeTimeEnd??>
+                                <input type="text" class="layui-input test-item" name="exchangeTimeEnd" value="${bean.exchangeTimeEnd }">
+                                <#else>
+                                    <input type="text" class="layui-input test-item" name="exchangeTimeEnd" placeholder="请选择">
+                            </#if>
+                        </div>
+                    </div>
+                    <button style="margin-top: -3px;" class="layui-btn">搜索</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- 内容区域-->
+    <div id="r-content" class="r-content">
+        <!-- 分页容器-->
+        <table id="page" lay-filter="tableFilter"></table>
+    </div>
+</body>
+
+<!-- js方法，分页，搜索时候部分参数需要重新赋值-->
+<script type="text/jscript" src="/resource/js/common/jquery-3.1.1.min.js"></script>
+<script src="/resource/layui/layui.js"></script>
+<!--搜索区域JS-->
+<script type="text/html" id="operateBar">
+    <!--<@p.permission bizCode='${bizCode}02'>-->
+        <!--<a class="layui-btn layui-btn-normal layui-btn-mini" lay-event="see">查看</a>-->
+    <!--</@p.permission>-->
+    {{# if (d.status == '1') { }}
+    <a class="layui-btn layui-btn-mini" lay-event="updateStatus">启用</a>
+    {{# } else { }}
+    <a class="layui-btn layui-btn-danger layui-btn-mini" lay-event="updateStatus">禁用</a>
+    {{# } }}
+</script>
+
+<script>
+    layui.use(['element'], function() {
+        var element = layui.element;
+    });
+</script>
+<!-- 分页JS-->
+<script>
+    layui.use('form', function() {});
+    layui.use(['jquery','table','form', 'laydate'], function(){
+        var form = layui.form;
+        var $ = layui.jquery;
+        var table = layui.table;
+        var laydate = layui.laydate;
+        //执行渲染
+        var tableIns = table.render({
+            id:'dataTable',
+            elem: '#page', //指定原始表格元素选择器（推荐id选择器）
+            page: true,
+            even: true,
+            cols:  [[ //标题栏
+                {field: 'tgyName', title: '推广员姓名', width:100, fixed: 'left',unresize:'true'}
+                ,{field: 'nickName', title: '渠道名称', width:100, fixed: 'left',unresize:'true'}
+                ,{field: 'statusStr', title: '状态', width:60, fixed: 'left',unresize:'true'}
+                ,{field: 'uv', title: 'UV', width: 60, fixed: 'left',unresize:'true'}
+                ,{field: 'loginCount', title: '下载量', width: 90, fixed: 'left',unresize:'true'}
+                ,{field: 'notRegister', title: '注册量', width: 80, fixed: 'left',unresize:'true'}
+                ,{field: 'register', title: '有效注册量', width: 100, fixed: 'left',unresize:'true'}
+                ,{field: 'rate', title: '注册转换率(%)', width: 130, fixed: 'left',unresize:'true'}
+                ,{field: 'successCount', title: '成交客户数量', width: 120, fixed: 'left',unresize:'true'}
+                ,{field: 'rateSuccess', title: '成交转化率(%)', width: 130, fixed: 'left',unresize:'true'}
+                ,{field: 'client', title: '分发客户数', width: 110, fixed: 'left',unresize:'true'}
+                ,{field: 'distribution', title: '总分发数', width: 100, fixed: 'left',unresize:'true'}
+               ,{fixed: 'left', title: '操作', width:120, align:'center', toolbar: '#operateBar',unresize:'true'}
+            ]],
+            url: '/admin/cw/cw_deposit_list.json',
+            method:'POST',
+            where : {bizCode:'${bizCode}'+'01',
+                username: $('#username').val(),
+                nickName: $('#nickName').val(),
+                tgyName: $('#tgyName').val(),
+                mobile: $('#mobile').val(),
+                exchangeTimeBegin: "${bean.exchangeTimeBegin!''}",
+                exchangeTimeEnd: "${bean.exchangeTimeEnd!''}"},
+            limits: layui.globalConfig.limits,
+            limit: 20,
+            request: {
+                pageName: 'pageNum', //页码的参数名称，默认：page
+                limitName: 'pageSize', //每页数据量的参数名，默认：limit
+
+            },
+            response: {
+                statusName: 'status',
+                statusCode: '00000', //成功的状态码，默认：0
+                msgName: 'msg', //状态信息的字段名称，默认：msg
+                countName: 'count', //数据总数的字段名称，默认：count
+                dataName: 'data'
+            }
+        });
+        //监听工具条
+        table.on('tool(tableFilter)', function(obj){
+            var data = obj.data;
+            if (obj.event === 'see') {
+                //异步请求返回页面
+                layer.open({
+                    type: 2 //返回iframe类型
+                    ,title: '查看'
+                    ,area: ['700px', '500px']//窗口大小
+                    ,shade: 0.3//显示透明罩效果
+                    ,maxmin: true
+                    ,btnAlign: 'c'//按钮位置居中
+                    ,btn: [] //按钮
+                    ,content: '/admin/cw/cw_deposit_see.do?bizCode=${bizCode}02&id='+data.id
+                    ,zIndex: 999 //重点1：层级
+                    ,success: function(layero, index){//参数1：当前dom,参数2：索引
+                        layer.setTop(layero); //重点2
+                    }
+
+                });
+            }else if (obj.event === 'updateStatus') {
+                layer.confirm('确定启用/禁用吗？', function(index){
+                    $.post("/admin/cha/updateStatus.do", { bizCode:'c010105', "id": data.id, "status": data.status },
+                        function(data){
+                            if(data.status == '00000'){
+                                layer.close(index);
+                                layer.msg("操作成功！");
+                                tableIns.reload();
+                            }else{
+                                layer.msg(data.msg);
+                            }
+                        },"json");
+                });
+            }
+        });
+        //添加事件//编辑事件//删除事件//
+        $('#operButDiv button').on('click', function() {
+            var $othis = $(this), $method = $othis.data('method');
+            active[$method] ? active[$method].call(this, $othis) : '';
+        });
+        lay('.test-item').each(function () {
+            laydate.render({
+                elem: this
+                , trigger: 'click'
+            });
+        })
+    });
+
+</script>
+
+</html>

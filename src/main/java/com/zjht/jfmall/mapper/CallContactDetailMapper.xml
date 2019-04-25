@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zjht.jfmall.dao.CallContactDetailMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.zjht.jfmall.entity.CallContactDetail">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="app_user_id" property="appUserId"/>
+        <result column="peer_num" property="peerNum"/>
+        <result column="group_name" property="groupName"/>
+        <result column="company_name" property="companyName"/>
+        <result column="city" property="city"/>
+        <result column="p_relation" property="pRelation"/>
+        <result column="call_cnt_1w" property="callCnt1w"/>
+        <result column="call_cnt_1m" property="callCnt1m"/>
+        <result column="call_cnt_3m" property="callCnt3m"/>
+        <result column="call_cnt_6m" property="callCnt6m"/>
+        <result column="call_time_3m" property="callTime3m"/>
+        <result column="call_time_6m" property="callTime6m"/>
+        <result column="trans_start" property="transStart"/>
+        <result column="trans_end" property="transEnd"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, name, app_user_id AS appUserId, peer_num AS peerNum, group_name AS groupName, company_name AS companyName, city, p_relation AS pRelation, call_cnt_1w AS callCnt1w, call_cnt_1m AS callCnt1m, call_cnt_3m AS callCnt3m, call_cnt_6m AS callCnt6m, call_time_3m AS callTime3m, call_time_6m AS callTime6m, trans_start AS transStart, trans_end AS transEnd
+    </sql>
+
+    <insert id="insertData">
+        insert into call_contact_detail
+        ( id, name,app_user_id,peer_num,group_name , company_name , city, p_relation , call_cnt_1w , call_cnt_1m ,
+        call_cnt_3m , call_cnt_6m , call_time_3m , call_time_6m , trans_start , trans_end
+        )
+        values
+        <foreach collection="list" item="obj" index="index" separator=",">
+            ( #{obj.id}, #{obj.name},#{obj.appUserId},#{obj.peerNum},#{obj.groupName},
+            #{obj.companyName},#{obj.city},#{obj.pRelation},#{obj.callCnt1w},
+            #{obj.callCnt1m},#{obj.callCnt3m},#{obj.callCnt6m},#{obj.callTime3m},#{obj.callTime6m},#{obj.transStart},#{obj.transEnd})
+        </foreach>
+    </insert>
+</mapper>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zjht.jfmall.dao.UserApplyLoanDao">
+    <resultMap id="BaseResultMap" type="com.zjht.jfmall.entity.UserApplyLoan">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="id" jdbcType="VARCHAR" property="id"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="app_user_id" jdbcType="VARCHAR" property="appUserId"/>
+        <result column="all_loan_id" jdbcType="VARCHAR" property="allLoanId"/>
+    </resultMap>
+    
+    <resultMap id="IncludeAppUser" type="com.zjht.jfmall.entity.UserApplyLoan" extends="BaseResultMap">
+        <association property="user" column="app_user_id" select="com.zjht.jfmall.dao.AppUserMapper.findById" />
+    </resultMap>
+
+    <resultMap id="IncludeLoan" type="com.zjht.jfmall.entity.UserApplyLoan" extends="BaseResultMap">
+        <association property="loan" column="all_loan_id" select="com.zjht.jfmall.dao.AllLoanDao.findById" />
+    </resultMap>
+
+    <select id="findPage" resultMap="IncludeAppUser">
+      select * from user_apply_loan where all_loan_id = #{param.id } ORDER BY create_time DESC
+    </select>
+
+    <select id="list" resultMap="IncludeLoan">
+      select * from user_apply_loan where app_user_id = #{appUserId } ORDER BY create_time DESC
+    </select>
+
+</mapper>

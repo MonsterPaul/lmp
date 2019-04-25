@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zjht.jfmall.dao.RechargeRecordDao">
+       
+       <resultMap id="BaseResultMap" type="com.zjht.jfmall.entity.RechargeRecord">
+              <id column="id" property="id" />
+              <result column="loan_id" property="loanId" />
+              <result column="balance" property="balance" />
+              <result column="recharge_amount" property="rechargeAmount" />
+              <result column="create_time" property="createTime" />
+              <result column="create_id" property="createId" />
+       </resultMap>
+
+</mapper>

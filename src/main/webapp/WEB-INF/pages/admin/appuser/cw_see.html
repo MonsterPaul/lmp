@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>会员信息</title>
+    <link rel="stylesheet" href="/resource/layui/css/layui.css"/>
+    <style>
+        .r-content{padding: 0 20px;}
+        .r-content .margin-top-5{margin-top: 5px;}
+    </style>
+</head>
+<body>
+    <div class="r-content">
+        <div class="layui-tab layui-tab-brief">
+            <ul class="layui-tab-title">
+                <li<#if bean.dataStatus == '0'> style="pointer-events: none;"</#if><#if bean.dataStatus == '1'> class="layui-this"</#if>>个人信息认证
+                <#if bean.dataStatus == '1'>
+                    <i class="layui-icon" style="color: #234aaa; font-weight: bold;">&#xe605;</i>
+                    <#else>
+                        <i class="layui-icon" style="color: red; font-weight: bold;">&#x1006;</i>
+                </#if>
+                </li>
+                <li<#if bean.idenStatus == '0'> style="pointer-events: none;"</#if>>通讯录认证
+                    <#if bean.idenStatus == '1'>
+                            <i class="layui-icon" style="color: #234aaa; font-weight: bold;">&#xe605;</i>
+                        <#else>
+                            <i class="layui-icon" style="color: red; font-weight: bold;">&#x1006;</i>
+                    </#if>
+                </li>
+                <li<#if bean.operatorStatus == '0'> style="pointer-events: none;"</#if>>运营商认证
+                    <#if bean.operatorStatus == '1'>
+                            <i class="layui-icon" style="color: #234aaa; font-weight: bold;">&#xe605;</i>
+                        <#else>
+                            <i class="layui-icon" style="color: red; font-weight: bold;">&#x1006;</i>
+                    </#if>
+                </li>
+                <li<#if bean.bankStatus == '0'> style="pointer-events: none;"</#if>>银行卡认证
+                    <#if bean.bankStatus == '1'>
+                            <i class="layui-icon" style="color: #234aaa; font-weight: bold;">&#xe605;</i>
+                        <#else>
+                            <i class="layui-icon" style="color: red; font-weight: bold;">&#x1006;</i>
+                    </#if>
+                </li>
+                <li<#if bean.dataStatus == '0'> class="layui-this"</#if>>邀请用户</li>
+                <li>申请详情</li>
+            </ul>
+            <div class="layui-tab-content">
+                <div<#if bean.dataStatus == '0'> class="layui-tab-item"</#if> <#if bean.dataStatus == '1'>class="layui-tab-item layui-show"</#if>>
+                    <form class="layui-form layui-form-pane" action="">
+                        <div class="layui-inline margin-top-5">
+                            <label class="layui-form-label">姓名</label>
+                            <div class="layui-input-inline">
+                                <input type="text" value="${bean.name!'' }" readonly class="layui-input" />
+                            </div>
+                        </div>
+                        <div class="layui-inline margin-top-5">
+                            <label class="layui-form-label">电话</label>
+                            <div class="layui-input-inline">
+                                <input type="text" value="${bean.phone!'' }" readonly class="layui-input" />
+                            </div>
+                        </div>
+                        <div class="layui-inline margin-top-5">
+                            <label class="layui-form-label">微信</label>
+                            <div class="layui-input-inline">
+                                <input type="text" value="${bean.wechat!'' }" readonly class="layui-input" />
+                            </div>
+                        </div>
+                        <div class="layui-inline margin-top-5">
+                            <label class="layui-form-label">QQ</label>
+                            <div class="layui-input-inline">
+                                <input type="text" value="${bean.qq!'' }" readonly class="layui-input" />
+                            </div>
+                        </div>
+                        <div class="layui-inline margin-top-5">
+                            <label class="layui-form-label">信用卡额度</label>
+                            <div class="layui-input-inline">
+                                <input type="text" value="${bean.creditCard!'' }" readonly class="layui-input" />
+                            </div>
+                        </div>
+                        <div class="layui-inline margin-top-5">
+                            <label class="layui-form-label">芝麻信用分</label>
+                            <div class="layui-input-inline">
+                                <input type="text" value="${bean.sesameCredit!'' }" readonly class="layui-input" />
+                            </div>
+                        </div>
+                        <div class="layui-inline margin-top-5">
+                            <label class="layui-form-label">央行黑名单</label>
+                            <div class="layui-input-block">
+                                <input type="text" value="${bean.backListStr!'' }" readonly class="layui-input" />
+                            </div>
+                        </div>
+                        <div class="layui-inline margin-top-5">
+                            <label class="layui-form-label">公积金</label>
+                            <div class="layui-input-block">
+                                <input type="text" value="${bean.accumulationStr!'' }" readonly class="layui-input" />
+                            </div>
+                        </div>
+                        <div class="layui-inline margin-top-5">
+                            <label class="layui-form-label">身份证</label>
+                            <div class="layui-input-block">
+                                <input type="text" value="${bean.idCard!'' }" readonly class="layui-input" />
+                            </div>
+                        </div>
+                        <div class="layui-form-item" style="margin-top: 5px;">
+                            <label class="layui-form-label">地址</label>
+                            <div class="layui-input-block">
+                                <input type="text" value="${bean.address!'' }" readonly class="layui-input" />
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="layui-tab-item">
+                    <table id="iden" lay-filter="tableFilter"></table>
+                </div>
+                <div class="layui-tab-item">
+                    <form class="layui-form layui-form-pane" action="">
+                        <div class="layui-inline margin-top-5">
+                            <label class="layui-form-label">姓名</label>
+                            <div class="layui-input-inline">
+                                <input type="text" value="${(bean.obj.name)!'' }" readonly class="layui-input" />
+                            </div>
+                        </div>
+                        <div class="layui-inline margin-top-5">
+                            <label class="layui-form-label">身份证</label>
+                            <div class="layui-input-inline">
+                                <input type="text" value="${(bean.obj.idCard)!'' }" readonly class="layui-input" />
+                            </div>
+                        </div>
+                        <div class="layui-inline margin-top-5">
+                            <label class="layui-form-label">性别</label>
+                            <div class="layui-input-inline">
+                                <input type="text" value="${(bean.obj.gender)!'' }" readonly class="layui-input" />
+                            </div>
+                        </div>
+                        <div class="layui-inline margin-top-5">
+                            <label class="layui-form-label">年龄</label>
+                            <div class="layui-input-inline">
+                                <input type="text" value="${(bean.obj.age)!'' }" readonly class="layui-input" />
+                            </div>
+                        </div>
+                        <div class="layui-inline margin-top-5">
+                            <label class="layui-form-label">星座</label>
+                            <div class="layui-input-inline">
+                                <input type="text" value="${(bean.obj.constellation)!'' }" readonly class="layui-input" />
+                            </div>
+                        </div>
+                        <div class="layui-inline margin-top-5">
+                            <label class="layui-form-label">所属省</label>
+                            <div class="layui-input-inline">
+                                <input type="text" value="${(bean.obj.province)!'' }" readonly class="layui-input" />
+                            </div>
+                        </div>
+                        <div class="layui-inline margin-top-5">
+                            <label class="layui-form-label">所属市</label>
+                            <div class="layui-input-inline">
+                                <input type="text" value="${(bean.obj.city)!'' }" readonly class="layui-input" />
+                            </div>
+                        </div>
+                        <div class="layui-inline margin-top-5">
+                            <label class="layui-form-label">所属县</label>
+                            <div class="layui-input-inline">
+                                <input type="text" value="${(bean.obj.region)!'' }" readonly class="layui-input" />
+                            </div>
+                        </div>
+                        <div class="layui-inline margin-top-5">
+                            <label class="layui-form-label">籍贯</label>
+                            <div class="layui-input-inline">
+                                <input type="text" value="${(bean.obj.nativePlace)!'' }" readonly class="layui-input" />
+                            </div>
+                        </div>
+                        <div class="layui-inline margin-top-5">
+                            <label class="layui-form-label">手机号</label>
+                            <div class="layui-input-inline">
+                                <input type="text" value="${(bean.obj.mobile)!'' }" readonly class="layui-input" />
+                            </div>
+                        </div>
+                        <div class="layui-inline margin-top-5">
+                            <label class="layui-form-label">用户姓名</label>
+                            <div class="layui-input-inline">
+                                <input type="text" value="${(bean.obj.carrierName)!'' }" readonly class="layui-input" />
+                            </div>
+                        </div>
+                        <div class="layui-inline margin-top-5">
+                            <label class="layui-form-label">用户身份证号码</label>
+                            <div class="layui-input-inline">
+                                <input type="text" value="${(bean.obj.carrierIdcard)!'' }" readonly class="layui-input" />
+                            </div>
+                        </div>
+                        <div class="layui-inline margin-top-5">
+                            <label class="layui-form-label">开户时间</label>
+                            <div class="layui-input-inline">
+                                <input type="text" value="${(bean.obj.regTime)!'' }" readonly class="layui-input" />
+                            </div>
+                        </div>
+                        <div class="layui-inline margin-top-5">
+                            <label class="layui-form-label">开户时长</label>
+                            <div class="layui-input-inline">
+                                <input type="text" value="${(bean.obj.inTime)!'' }" readonly class="layui-input" />
+                            </div>
+                        </div>
+                        <div class="layui-form-item margin-top-5">
+                            <label class="layui-form-label">归属地</label>
+                            <div class="layui-input-block">
+                                <input type="text" value="${(bean.obj.phoneAttribution)!'' }" readonly class="layui-input" />
+                            </div>
+                        </div>
+                        <div class="layui-form-item margin-top-5">
+                            <label class="layui-form-label">用户邮箱</label>
+                            <div class="layui-input-block">
+                                <input type="text" value="${(bean.obj.email)!'' }" readonly class="layui-input" />
+                            </div>
+                        </div>
+                        <div class="layui-form-item margin-top-5">
+                            <label class="layui-form-label">地址</label>
+                            <div class="layui-input-block">
+                                <input type="text" value="${(bean.obj.address)!'' }" readonly class="layui-input" />
+                            </div>
+                        </div>
+                        <div class="layui-form-item margin-top-5">
+                            <label class="layui-form-label">是否实名</label>
+                            <div class="layui-input-block">
+                                <input type="text" value="${(bean.obj.reliability)!'' }" readonly class="layui-input" />
+                            </div>
+                        </div>
+                        <div class="layui-form-item margin-top-5">
+                            <label class="layui-form-label">居住地址</label>
+                            <div class="layui-input-block">
+                                <input type="text" value="${(bean.obj.liveAddress)!'' }" readonly class="layui-input" />
+                            </div>
+                        </div>
+                        <div class="layui-form-item margin-top-5">
+                            <label class="layui-form-label">余额</label>
+                            <div class="layui-input-block">
+                                <input type="text" value="${(bean.obj.availableBalance)!'' }" readonly class="layui-input" />
+                            </div>
+                        </div>
+                        <div class="layui-form-item margin-top-5">
+                            <label class="layui-form-label">套餐</label>
+                            <div class="layui-input-block">
+                                <input type="text" value="${(bean.obj.packageName)!'' }" readonly class="layui-input" />
+                            </div>
+                        </div>
+                        <div class="layui-form-item margin-top-5">
+                            <label class="layui-form-label">账单认证日期</label>
+                            <div class="layui-input-block">
+                                <input type="text" value="${(bean.obj.billCertificationDay)!'' }" readonly class="layui-input" />
+                            </div>
+                        </div>
+                    </form>
+                    <table id="operator" lay-filter="tableFilter"></table>
+                </div>
+                <div class="layui-tab-item">
+                    <form class="layui-form layui-form-pane" action="">
+                        <div class="layui-inline margin-top-5">
+                            <label class="layui-form-label">卡号</label>
+                            <div class="layui-input-inline">
+                                <input type="text" value="${bean.bankNo!'' }" readonly class="layui-input" />
+                            </div>
+                        </div>
+                        <div class="layui-inline margin-top-5">
+                            <label class="layui-form-label">持卡人</label>
+                            <div class="layui-input-inline">
+                                <input type="text" value="${bean.bankPerson!'' }" readonly class="layui-input" />
+                            </div>
+                        </div>
+                        <div class="layui-inline margin-top-5">
+                            <label class="layui-form-label">开户行</label>
+                            <div class="layui-input-inline">
+                                <input type="text" value="${bean.bankAddress!'' }" readonly class="layui-input" />
+                            </div>
+                        </div>
+                        <div class="layui-inline margin-top-5">
+                            <label class="layui-form-label">预留手机号</label>
+                            <div class="layui-input-inline">
+                                <input type="text" value="${bean.bankPhone!'' }" readonly class="layui-input" />
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            <div<#if bean.dataStatus == '0'> class="layui-tab-item layui-show"</#if> <#if bean.dataStatus == '1'>class="layui-tab-item"</#if>>
+                    <table id="page" lay-filter="tableFilter"></table>
+                </div>
+                <div class="layui-tab-item">
+                    <table id="loan" lay-filter="tableFilter"></table>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+<!-- js方法，分页，搜索时候部分参数需要重新赋值-->
+<script type="text/jscript" src="/resource/js/common/jquery-3.1.1.min.js"></script>
+<script src="/resource/layui/layui.js"></script>
+<script>
+    layui.use(['element', 'form', 'jquery','table'], function() {
+        var element = layui.element;
+        var form = layui.form;
+        var $ = layui.jquery;
+        var table = layui.table;
+        //执行渲染
+        var tableIns = table.render({//邀请记录
+            id:'dataTable',
+            elem: '#page', //指定原始表格元素选择器（推荐id选择器）
+            page: true,
+            even: true,
+            cols:  [[ //标题栏
+                {field: 'fid', title: '序号', width:80, templet: '<div>{{d.LAY_TABLE_INDEX + 1}}</div>', fixed: 'left',unresize:'true'}
+                ,{field: 'name', title: '姓名', width:80, fixed: 'left',unresize:'true'}
+                ,{field: 'phone', title: '手机号码', width:120, fixed: 'left',unresize:'true'}
+                ,{field: 'wechat', title: '微信号', width: 90, fixed: 'left',unresize:'true'}
+                ,{field: 'registerTime', title: '注册时间', width: 180, fixed: 'left',unresize:'true'}
+                ,{field: 'dataStatusStr', title: '个人信息认证', width: 120, fixed: 'left',unresize:'true'}
+                ,{field: 'idenStatusStr', title: '通讯录认证', width: 120, fixed: 'left',unresize:'true'}
+                ,{field: 'operatorStatusStr', title: '运营商认证', width: 120, fixed: 'left',unresize:'true'}
+                ,{field: 'invitationMmoney', title: '奖励金额', width: 110, fixed: 'left',unresize:'true'}
+            ]],
+            url: '/admin/appuser/cwo_appuser_list.json',
+            method:'POST',
+            where : {id : '${bean.id }'},
+            limits: layui.globalConfig.limits,
+            limit: 20,
+            request: {
+                pageName: 'pageNum', //页码的参数名称，默认：page
+                limitName: 'pageSize', //每页数据量的参数名，默认：limit
+            },
+            response: {
+                statusName: 'status',
+                statusCode: '00000', //成功的状态码，默认：0
+                msgName: 'msg', //状态信息的字段名称，默认：msg
+                countName: 'count', //数据总数的字段名称，默认：count
+                dataName: 'data'
+            }
+        });
+
+        //执行渲染
+        var tableIns = table.render({//手机通讯录
+            id:'idenTable',
+            elem: '#iden', //指定原始表格元素选择器（推荐id选择器）
+            page: true,
+            even: true,
+            cols:  [[ //标题栏
+                {field: 'fid', title: '序号', width:110, fixed: 'left', templet: '<div>{{d.LAY_TABLE_INDEX + 1}}</div>',unresize:'true'}
+                ,{field: 'name', title: '姓名', width:110, fixed: 'left',unresize:'true'}
+                ,{field: 'mobile', title: '手机号码', width:120, fixed: 'left',unresize:'true'}
+                ,{field: 'remark', title: '备注', width: 120, fixed: 'left',unresize:'true'}
+            ]],
+            url: '/admin/mail/cwo_list.json',
+            method:'POST',
+            where : {id : '${bean.id }'},
+            limits: layui.globalConfig.limits,
+            limit: 20,
+            request: {
+                pageName: 'pageNum', //页码的参数名称，默认：page
+                limitName: 'pageSize', //每页数据量的参数名，默认：limit
+            },
+            response: {
+                statusName: 'status',
+                statusCode: '00000', //成功的状态码，默认：0
+                msgName: 'msg', //状态信息的字段名称，默认：msg
+                countName: 'count', //数据总数的字段名称，默认：count
+                dataName: 'data'
+            }
+        });
+
+        //申请平台
+        var loans = table.render({//手机通讯录
+            id:'loanTable',
+            elem: '#loan', //指定原始表格元素选择器（推荐id选择器）
+            even: true,
+            cols:  [[ //标题栏
+                {field: 'fid', title: '序号', width:110, fixed: 'left', templet: '<div>{{d.LAY_TABLE_INDEX + 1}}</div>',unresize:'true'}
+                ,{field: 'loan.name', title: '平台名称', width:200, fixed: 'left',unresize:'true'}
+                ,{field: 'createTime', title: '申请时间', width:200, fixed: 'left',unresize:'true'}
+            ]],
+            url: '/admin/allLoan/userRecord.json',
+            method:'POST',
+            where : {id : '${bean.id }'},
+            limits: layui.globalConfig.limits,
+            limit: 20,
+            request: {
+                pageName: 'pageNum', //页码的参数名称，默认：page
+                limitName: 'pageSize', //每页数据量的参数名，默认：limit
+            },
+            response: {
+                statusName: 'status',
+                statusCode: '00000', //成功的状态码，默认：0
+                msgName: 'msg', //状态信息的字段名称，默认：msg
+                countName: 'count', //数据总数的字段名称，默认：count
+                dataName: 'data'
+            }
+        });
+
+        //执行渲染
+        var tableIns = table.render({//通话记录
+            id:'operatorTable',
+            elem: '#operator', //指定原始表格元素选择器（推荐id选择器）
+            page: true,
+            even: true,
+            cols:  [[ //标题栏
+                {field: 'fid', title: '排名', width:80, templet: '<div>{{d.LAY_TABLE_INDEX + 1}}</div>'}
+                ,{field: 'name', title: '联系人姓名', width:130}
+                ,{field: 'peerNum', title: '联系人号码', width:130}
+                ,{field: 'callCnt1w', title: '近1周通话次数', width:150}
+                ,{field: 'callCnt1m', title: '近1月通话次数', width:150}
+                ,{field: 'callCnt3m', title: '近3月通话次数', width:150}
+                ,{field: 'callCnt6m', title: '近6月通话次数', width:150}
+                ,{field: 'callTime3m', title: '近3月通话时长', width: 150}
+                ,{field: 'callTime6m', title: '近6月通话时长', width: 150}
+                ,{field: 'transStart', title: '第一次通话时间', width: 150}
+                ,{field: 'transEnd', title: '最后一次通话时间', width: 150}
+            ]],
+            url: '/admin/appuser/cwo_call_list.json',
+            method:'POST',
+            where : {id : '${bean.id }'},
+            limits: layui.globalConfig.limits,
+            limit: 20,
+            request: {
+                pageName: 'pageNum', //页码的参数名称，默认：page
+                limitName: 'pageSize', //每页数据量的参数名，默认：limit
+            },
+            response: {
+                statusName: 'status',
+                statusCode: '00000', //成功的状态码，默认：0
+                msgName: 'msg', //状态信息的字段名称，默认：msg
+                countName: 'count', //数据总数的字段名称，默认：count
+                dataName: 'data'
+            }
+        });
+    });
+</script>
+</html>

@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>新增</title>
+    <link rel="stylesheet" href="/resource/layui/css/layui.css"/>
+</head>
+<body>
+<div style="margin: 20px;">
+    <form id="subForm" class="layui-form" action="" method="post">
+        <div class="layui-form-item">
+            <label class="layui-form-label">渠道名称</label>
+            <div class="layui-input-block">
+                <input type="text" name="nickName" maxlength="18" required lay-verify="required" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">账号</label>
+            <div class="layui-input-block">
+                <input type="text" name="username" maxlength="50" required lay-verify="required" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">密码</label>
+            <div class="layui-input-block">
+                <input type="text" name="password" maxlength="50" required lay-verify="required" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">微信号</label>
+            <div class="layui-input-block">
+                <input type="text" name="wechat" maxlength="30" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">联系人</label>
+            <div class="layui-input-block">
+                <input type="text" name="linkMan" maxlength="20" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">联系电话</label>
+            <div class="layui-input-block">
+                <input type="text" name="mobile" maxlength="11" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">结算方式</label>
+            <div class="layui-input-block">
+                <select name="way" lay-verify="required">
+                    <option value="CPA">CPA</option>
+                    <option value="CPS">CPS</option>
+                    <option value="UV">UV</option>
+                </select>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">价格</label>
+            <div class="layui-input-block">
+                <input type="text" name="price" maxlength="30" required lay-verify="required|numbers" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">地区</label>
+            <div class="layui-input-block">
+                <input type="text" name="address" maxlength="100" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">备注</label>
+            <div class="layui-input-block">
+                <textarea name="remarks" maxlength="255" class="layui-textarea"></textarea>
+            </div>
+        </div>
+        <input type="hidden" name="status" value="0">
+        <div class="layui-form-item">
+            <div style="width: 80%; margin: 0 auto; text-align: center;">
+                <button class="layui-btn" lay-filter="save" lay-submit>保存</button>
+            </div>
+        </div>
+
+    </form>
+</div>
+</body>
+
+<script src="/resource/js/common/jquery-3.1.1.min.js"></script>
+<script src="/resource/layui/layui.all.js"></script>
+<script>
+
+    var bizCode = '${bizCode}';
+    if(bizCode){
+        bizCode = bizCode.substring(0,5);
+    }
+
+    layui.use('form', function() {
+        var form = layui.form, layer = layui.layer, upload = layui.upload;//图片上传
+        //监听提交
+        form.on('submit(save)', function(data) {
+            var url = "/admin/cha/o_add.do?bizCode="+bizCode+"02";
+            $.post(url, $("#subForm").serialize(), function(data) {
+                if (data.status == "00000") {//提示成功后重新加载数据
+                    layer.msg("新增成功");
+                    var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                    parent.layui.table.reload("dataTable");
+                    parent.layer.close(index);
+                } else {
+                    layer.alert(data.msg);
+                }
+            }, "JSON");
+            return false;//出错则不关闭窗口
+        });
+
+        form.verify({
+            numbers: [
+                /(^[0-9]+\.[0-9]*[1-9][0-9]*$)|(^[0-9]*[1-9][0-9]*\.[0-9]+$)|(^[0-9]*[1-9][0-9]*$)|(^\d+$)/,
+                '只能输入大于0的数值'
+            ]
+        });
+    });
+</script>
+</html>

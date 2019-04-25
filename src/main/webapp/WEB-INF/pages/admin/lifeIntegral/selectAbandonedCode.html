@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>商户登录</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+<meta name="format-detection" content="telephone=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="stylesheet" href="/resource/webapp/lifeintegral/css/base.css">
+    <link rel="stylesheet" href="/resource/webapp/lifeintegral/css/def.css">
+    <script src="/resource/js/common/jquery-3.1.1.min.js"></script>
+    <script src="/resource/webapp/lifeintegral/js/global.js"></script>
+</head>
+<body bgcolor="#146e2e">
+
+<header class="login-infor">
+    <img src="/resource/webapp/lifeintegral/images/local/login-user.png">
+    <p>${member.nickName }</p>
+</header>
+
+
+<section class="form-infor form-infor-ticket">
+    <dl>
+        <dt>手机号码</dt>
+        <dd>
+            <img class="icon" src="/resource/webapp/lifeintegral/images/icons/tel.jpg"></i>
+            <input class="ipt" type="text" placeholder="请输入手机号码" id="mobile" value="">
+        </dd>
+    </dl>
+</section>
+
+<section class="form-btn" style="margin-top:1rem">
+    <button class="btn" id="search">查询</button>
+    <a class="btn" href="#" onClick="javascript :history.back(-1);return false;">返回</a>
+</section>
+
+
+<script>
+    $(function(){
+        $("#search").click(function () {
+            var mobile = $("#mobile").val();
+            if (!mobile) {
+                alert("请输入手机号码");
+                return false;
+            }
+            location.href = "/admin/lifeIntegral/electronicCode/v_searchAbandonedCode.do?bizCode=j010108&mobile="+mobile;
+
+        })
+    });
+
+</script>
+</body>
+</html>

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zjht.jfmall.dao.UserFeedbackMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.zjht.jfmall.entity.UserFeedback">
+        <id column="id" property="id" />
+        <result column="user_id" property="userId" />
+        <result column="feed_back" property="feedBack" />
+        <result column="feed_image_url" property="feedImageUrl" />
+        <result column="processing_state" property="processingState" />
+        <result column="customer_id" property="customerId" />
+        <result column="operator_id" property="operatorId" />
+        <result column="operator_time" property="operatorTime" />
+        <result column="create_time" property="createTime" />
+        <result column="process_remark" property="processRemark" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, user_id AS userId, feed_back AS feedBack, feed_image_url AS feedImageUrl, processing_state AS processingState,
+        customer_id AS customerId, operator_id AS operatorId, operator_time AS operatorTime,
+        process_remark as processRemark, create_time as createTime
+    </sql>
+
+    <select id="findPage" resultMap="BaseResultMap">
+      select uf.* from t_user_feedback as uf
+        INNER JOIN app_user as au on uf.user_id = au.id
+        INNER JOIN t_user as u on uf.customer_id = u.id
+        <where>
+            <if test="bean.userName != null and bean.userName != ''">
+                and u.nick_name like CONCAT('%', #{bean.userName }, '%')
+            </if>
+            <if test="bean.appUserName != null and bean.appUserName != ''">
+                and au.name like CONCAT('%', #{bean.appUserName }, '%')
+            </if>
+        </where>
+    </select>
+
+    <select id="findById" resultMap="BaseResultMap">
+        select * from t_user_feedback where id = #{id }
+    </select>
+    
+    <update id="update">
+        update t_user_feedback set process_remark = #{bean.processRemark }, processing_state = #{bean.processingState },
+         operator_id = #{bean.operatorId }, operator_time = #{bean.operatorTime } where id = #{bean.id }
+    </update>
+
+    <select id="getUserFeedBackList" resultMap="BaseResultMap">
+        SELECT * FROM t_user_feedback WHERE user_id=#{id} order by operator_time desc limit ${(num-1)*size},${size}
+    </select>
+</mapper>

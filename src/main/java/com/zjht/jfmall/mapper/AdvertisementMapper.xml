@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zjht.jfmall.dao.AdvertisementDao">
+  <resultMap id="BaseResultMap" type="com.zjht.jfmall.entity.Advertisement">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="url" jdbcType="VARCHAR" property="url" />
+    <result column="img" jdbcType="VARCHAR" property="img" />
+    <result column="content" jdbcType="VARCHAR" property="content" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="operator_id" jdbcType="VARCHAR" property="operatorId" />
+    <result column="operator_date" jdbcType="TIMESTAMP" property="operatorDate" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+  </resultMap>
+
+  <delete id="deleteById">
+    delete from advertisement where id = #{id }
+  </delete>
+
+  <select id="findById" resultMap="BaseResultMap">
+    select * from advertisement where id = #{id }
+  </select>
+
+  <update id="update">
+    update advertisement set url = #{bean.url }, img = #{bean.img }, content = #{bean.content }, status = #{bean.status }, remark = #{bean.remark },
+      operator_id = #{bean.operatorId }, operator_date = #{bean.operatorDate }, name = #{bean.name } where  id = #{bean.id }
+  </update>
+
+</mapper>

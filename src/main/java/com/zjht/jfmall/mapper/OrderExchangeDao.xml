@@ -1,0 +1,327 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zjht.jfmall.dao.OrderExchangeDao">
+    <resultMap id="BaseResultMap" type="com.zjht.jfmall.entity.OrderExchange">
+        <id column="id" jdbcType="CHAR" property="id"/>
+        <result column="order_no" jdbcType="VARCHAR" property="orderNo"/>
+        <result column="product_id" jdbcType="CHAR" property="productId"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="end_time" jdbcType="TIMESTAMP" property="endTime"/>
+        <result column="user_id" jdbcType="VARCHAR" property="userId"/>
+        <result column="phone" jdbcType="VARCHAR" property="phone"/>
+        <result column="integral" jdbcType="VARCHAR" property="integral"/>
+        <result column="amount" jdbcType="DECIMAL" property="amount"/>
+        <result column="product_price" jdbcType="DECIMAL" property="productPrice"/>
+        <result column="status" jdbcType="INTEGER" property="status"/>
+        <result column="remark" jdbcType="VARCHAR" property="remark"/>
+        <result column="openId" jdbcType="VARCHAR" property="openid"/>
+        <result column="deal_type" jdbcType="INTEGER" property="dealType"/>
+        <result column="deal_status" jdbcType="INTEGER" property="dealStatus"/>
+        <result column="resp_code" jdbcType="VARCHAR" property="respCode"/>
+        <result column="resp_msg" jdbcType="VARCHAR" property="respMsg"/>
+        <result column="total" jdbcType="INTEGER" property="total"/>
+        <association property="product" column="product_id" javaType="com.zjht.jfmall.entity.Product" select="com.zjht.jfmall.dao.ProductDao.selectById">
+        </association>
+        <association property="user" column="user_id" javaType="com.zjht.jfmall.entity.User" select="com.zjht.jfmall.dao.UserDao.selectByPrimaryKey">
+        </association>
+    </resultMap>
+    <sql id="Base_Column_List">
+        id, order_no, product_id, create_time, end_time, user_id, phone, integral, amount, product_price, status,
+        remark, openId, deal_type, deal_status, resp_code, resp_msg, total
+    </sql>
+    <sql id="Base_Where_Clause">
+        <where>
+            <if test="param.id!=null and param.id!=''">
+                and mt.id=#{param.id}
+            </if>
+            <if test="param.orderNo!=null and param.orderNo!=''">
+                and mt.order_no=#{param.orderNo}
+            </if>
+            <if test="param.productId!=null and param.productId!=''">
+                and mt.product_id=#{param.productId}
+            </if>
+            <if test="param.createTime!=null and param.createTime!=''">
+                and mt.create_time=#{param.createTime}
+            </if>
+            <if test="param.endTime!=null and param.endTime!=''">
+                and mt.end_time=#{param.endTime}
+            </if>
+            <if test="param.userId!=null and param.userId!=''">
+                and mt.user_id=#{param.userId}
+            </if>
+            <if test="param.phone!=null and param.phone!=''">
+                and mt.phone=#{param.phone}
+            </if>
+            <if test="param.integral!=null and param.integral!=''">
+                and mt.integral=#{param.integral}
+            </if>
+            <if test="param.status!=null ">
+                and mt.status=#{param.status}
+            </if>
+            <if test="param.remark!=null and param.remark!=''">
+                and mt.remark=#{param.remark}
+            </if>
+            <if test="param.openid!=null and param.openid!=''">
+                and mt.openId=#{param.openid}
+            </if>
+            <if test="param.dealType!=null ">
+                and mt.deal_type=#{param.dealType}
+            </if>
+            <if test="param.dealStatus!=null ">
+                and mt.deal_status=#{param.dealStatus}
+            </if>
+            <if test="param.respCode!=null and param.respCode!=''">
+                and mt.resp_code=#{param.respCode}
+            </if>
+            <if test="param.respMsg!=null and param.respMsg!=''">
+                and mt.resp_msg=#{param.respMsg}
+            </if>
+            <if test="param.total!=null and param.total!=''">
+                and mt.total=#{param.total}
+            </if>
+            <if test="param.exchangeTimeBegin != null and param.exchangeTimeBegin != '' ">
+                <![CDATA[  and mt.create_time >= #{param.exchangeTimeBegin}  ]]>
+            </if>
+            <if test="param.exchangeTimeEnd!=null and param.exchangeTimeEnd!='' ">
+                <![CDATA[  and mt.create_time <=  '${param.exchangeTimeEnd} 23:59:59']]>
+            </if>
+            <if test="param.product!=null" >
+                <if test="param.product.productName!=null and param.product.productName!='' " >
+                    and product.product_name like CONCAT('%',CONCAT(#{param.product.productName},'%'))
+                </if>
+            </if>
+            <if test="param.user!=null" >
+                <if test="param.user.channelId!=null and param.user.channelId!='' " >
+                    and u.channel_id=#{param.user.channelId}
+                </if>
+            </if>
+        </where>
+    </sql>
+    <select id="selectById" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_order_exchange mt
+        where id = #{id,jdbcType=CHAR}
+    </select>
+    <select id="findByOrderNo" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_order_exchange mt
+        where order_no = #{orderNo,jdbcType=VARCHAR}
+    </select>
+
+    <select id="selectListByObject" parameterType="com.zjht.jfmall.entity.OrderExchange" resultMap="BaseResultMap">
+        select
+        <if test="param.distinct">
+            distinct
+        </if>
+        mt.*
+        from t_order_exchange mt left join t_product product on mt.product_id = product.id
+        left join t_user u on mt.user_id = u.id
+        <if test="param != null">
+            <include refid="Base_Where_Clause"/>
+        </if>
+        <if test="param.orderByClause != null">
+            order by ${param.orderByClause}
+        </if>
+    </select>
+    <insert id="insert" parameterType="com.zjht.jfmall.entity.base.BaseOrderExchange">
+        <selectKey keyProperty="id" order="BEFORE" resultType="java.lang.String">
+            SELECT nextval('SEQ_ORDER_EXCHANGE') as id
+        </selectKey>
+        insert into t_order_exchange (id, order_no, product_id, create_time,
+        end_time, user_id, phone,
+        integral, amount, product_price, status, remark,
+        openId, deal_type, deal_status, resp_code, resp_msg, total)
+        values (#{id,jdbcType=VARCHAR}, #{orderNo,jdbcType=VARCHAR}, #{productId,jdbcType=CHAR},
+        #{createTime,jdbcType=TIMESTAMP},
+        #{endTime,jdbcType=TIMESTAMP}, #{userId,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR},
+        #{integral,jdbcType=VARCHAR}, #{amount,jdbcType=DECIMAL}, #{productPrice,jdbcType=DECIMAL}, #{status,jdbcType=INTEGER}, #{remark,jdbcType=VARCHAR},
+        #{openid,jdbcType=VARCHAR}, #{dealType,jdbcType=INTEGER}, #{dealStatus,jdbcType=INTEGER},
+        #{respCode,jdbcType=VARCHAR}, #{respMsg,jdbcType=VARCHAR}, #{total,jdbcType=INTEGER})
+    </insert>
+    <insert id="insertSelective" parameterType="com.zjht.jfmall.entity.base.BaseOrderExchange">
+        <selectKey keyProperty="id" order="AFTER" resultType="java.lang.String">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        insert into t_order_exchange
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="orderNo != null">
+                order_no,
+            </if>
+            <if test="productId != null">
+                product_id,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="endTime != null">
+                end_time,
+            </if>
+            <if test="userId != null">
+                user_id,
+            </if>
+            <if test="phone != null">
+                phone,
+            </if>
+            <if test="integral != null">
+                integral,
+            </if>
+            <if test="amount != null">
+                amount,
+            </if>
+            <if test="productPrice != null">
+                product_price,
+            </if>
+            <if test="status != null">
+                status,
+            </if>
+            <if test="remark != null">
+                remark,
+            </if>
+            <if test="openid != null">
+                openId,
+            </if>
+            <if test="dealType != null">
+                deal_type,
+            </if>
+            <if test="dealStatus != null">
+                deal_status,
+            </if>
+            <if test="respCode != null">
+                resp_code,
+            </if>
+            <if test="respMsg != null">
+                resp_msg,
+            </if>
+            <if test="total != null">
+                total,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="orderNo != null">
+                #{orderNo,jdbcType=VARCHAR},
+            </if>
+            <if test="productId != null">
+                #{productId,jdbcType=CHAR},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="endTime != null">
+                #{endTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="userId != null">
+                #{userId,jdbcType=VARCHAR},
+            </if>
+            <if test="phone != null">
+                #{phone,jdbcType=VARCHAR},
+            </if>
+            <if test="integral != null">
+                #{integral,jdbcType=VARCHAR},
+            </if>
+            <if test="amount != null">
+                #{amount,jdbcType=DECIMAL},
+            </if>
+            <if test="productPrice != null">
+                #{productPrice,jdbcType=DECIMAL},
+            </if>
+            <if test="status != null">
+                #{status,jdbcType=INTEGER},
+            </if>
+            <if test="remark != null">
+                #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="openid != null">
+                #{openid,jdbcType=VARCHAR},
+            </if>
+            <if test="dealType != null">
+                #{dealType,jdbcType=INTEGER},
+            </if>
+            <if test="dealStatus != null">
+                #{dealStatus,jdbcType=INTEGER},
+            </if>
+            <if test="respCode != null">
+                #{respCode,jdbcType=VARCHAR},
+            </if>
+            <if test="respMsg != null">
+                #{respMsg,jdbcType=VARCHAR},
+            </if>
+            <if test="total != null">
+                #{total,jdbcType=INTEGER},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByIdSelective" parameterType="com.zjht.jfmall.entity.base.BaseOrderExchange">
+        update t_order_exchange
+        <set>
+            <if test="orderNo != null">
+                order_no = #{orderNo,jdbcType=VARCHAR},
+            </if>
+            <if test="productId != null">
+                product_id = #{productId,jdbcType=CHAR},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="endTime != null">
+                end_time = #{endTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="userId != null">
+                user_id = #{userId,jdbcType=VARCHAR},
+            </if>
+            <if test="phone != null">
+                phone = #{phone,jdbcType=VARCHAR},
+            </if>
+            <if test="integral != null">
+                integral = #{integral,jdbcType=VARCHAR},
+            </if>
+            <if test="amount != null">
+                amount = #{amount,jdbcType=DECIMAL},
+            </if>
+            <if test="productPrice != null">
+                product_price = #{productPrice,jdbcType=DECIMAL},
+            </if>
+
+            <if test="status != null">
+                status = #{status,jdbcType=INTEGER},
+            </if>
+            <if test="remark != null">
+                remark = #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="openid != null">
+                openId = #{openid,jdbcType=VARCHAR},
+            </if>
+            <if test="dealType != null">
+                deal_type = #{dealType,jdbcType=INTEGER},
+            </if>
+            <if test="dealStatus != null">
+                deal_status = #{dealStatus,jdbcType=INTEGER},
+            </if>
+            <if test="respCode != null">
+                resp_code = #{respCode,jdbcType=VARCHAR},
+            </if>
+            <if test="respMsg != null">
+                resp_msg = #{respMsg,jdbcType=VARCHAR},
+            </if>
+            <if test="total != null">
+                total = #{total,jdbcType=INTEGER},
+            </if>
+        </set>
+        where id = #{id,jdbcType=CHAR}
+    </update>
+
+    <!-- 获取指定日期内的订单数量  0,1,3,4,5为有效的订单状态-->
+    <select id="selectExchangeOrder" parameterType="com.zjht.jfmall.entity.OrderExchange" resultType="int">
+        select count(id) from t_order_exchange where status in(0,1,3,4,5)
+        <if test="param.exchangeTimeBegin != null and param.exchangeTimeBegin != '' ">
+            <![CDATA[  and create_time between #{param.exchangeTimeBegin} and '${param.exchangeTimeBegin} 23:59:59' ]]>
+        </if>
+        <if test="param.phone!=null and param.phone!=''">
+            and phone=#{param.phone}
+        </if>
+        <if test="param.productId!=null and param.productId!=''">
+            and product_id=#{param.productId}
+        </if>
+    </select>
+</mapper>

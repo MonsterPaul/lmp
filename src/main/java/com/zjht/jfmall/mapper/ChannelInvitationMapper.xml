@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zjht.jfmall.dao.ChannelInvitationMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.zjht.jfmall.entity.ChannelInvitation">
+        <id column="id" property="id" />
+        <result column="channel_business_id" property="channelBusinessId" />
+        <result column="invitation_user_id" property="invitationUserId" />
+        <result column="invitation_time" property="invitationTime" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, channel_business_id AS channelBusinessId, invitation_user_id AS invitationUserId, invitation_time AS invitationTime
+    </sql>
+
+    <select id="countByChannelId" resultType="java.lang.Integer">
+        select count(ci.id) from t_channel_invitation as ci left join app_user as au on ci.invitation_user_id = au.id
+          where au.data_status = 1 and au.iden_status = 1 and au.operator_status = 1 and ci.channel_business_id = #{user.id }
+        <if test="user.exchangeTimeBegin != null and user.exchangeTimeBegin != ''">
+            <![CDATA[  and ci.invitation_time >= '${user.exchangeTimeBegin} 00:00:00'  ]]>
+        </if>
+        <if test="user.exchangeTimeEnd != null and user.exchangeTimeEnd != ''">
+            <![CDATA[  and ci.invitation_time <=  '${user.exchangeTimeEnd} 23:59:59']]>
+        </if>
+    </select>
+
+    <select id="countByChannelIds" resultType="java.lang.Integer">
+        select count(ci.id) from t_channel_invitation as ci left join app_user as au  on ci.invitation_user_id = au.id
+        where   ci.channel_business_id in ( select id from t_user where channel_per_id =#{user.id }) and au.data_status = 1 and au.iden_status = 1 and au.operator_status = 1
+        <if test="user.exchangeTimeBegin != null and user.exchangeTimeBegin != ''">
+            <![CDATA[  and ci.invitation_time like CONCAT(#{user.exchangeTimeBegin},'%')  ]]>
+        </if>
+
+    </select>
+
+    <select id="countAllByChannelIds" resultType="java.lang.Integer">
+        select count(ci.id) from t_channel_invitation as ci left join app_user as au on ci.invitation_user_id = au.id
+        where ci.channel_business_id in ( select id from t_user where channel_per_id =#{user.id })
+        <if test="user.exchangeTimeBegin != null and user.exchangeTimeBegin != ''">
+            <![CDATA[  and ci.invitation_time like CONCAT(#{user.exchangeTimeBegin},'%')  ]]>
+        </if>
+
+    </select>
+
+    <select id="countAllByChannelId" resultType="java.lang.Integer">
+        select count(ci.id) from t_channel_invitation as ci left join app_user as au on ci.invitation_user_id = au.id
+          where ci.channel_business_id = #{user.id }
+        <if test="user.exchangeTimeBegin != null and user.exchangeTimeBegin != ''">
+            <![CDATA[  and ci.invitation_time >= '${user.exchangeTimeBegin} 00:00:00'  ]]>
+        </if>
+        <if test="user.exchangeTimeEnd != null and user.exchangeTimeEnd != ''">
+            <![CDATA[  and ci.invitation_time <=  '${user.exchangeTimeEnd} 23:59:59']]>
+        </if>
+    </select>
+    
+</mapper>

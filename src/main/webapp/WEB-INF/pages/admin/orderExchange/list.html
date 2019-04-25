@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>兑换订单</title>
+    <link rel="stylesheet" href="/resource/layui/css/layui.css"/>
+    <style>
+        .r-content{padding: 0 20px;}
+        .r-content div{margin: 0;}
+        .r-btn-area{margin-top: 10px;}
+        .r-btn-area blockquote{margin-bottom: 0; border-right: 1px solid #e2e2e2; border-top: 1px solid #e2e2e2; padding: 5px;}
+        .r-search{margin: 10px 20px 0;}
+        .width70{width: 70px;}
+        .item{display: inline-block; margin-bottom: 0;}
+    </style>
+</head>
+<body>
+    <!-- 搜索区域 -->
+    <div class="layui-collapse r-search">
+        <div class="layui-colla-item">
+            <h2 class="layui-colla-title">搜索</h2>
+            <div class="layui-colla-content layui-show">
+                <form id="searchForm"
+                      action="/admin/lifeIntegral/orderExchange/v_list.do?bizCode=${bizCode}"
+                      method="post">
+                    <div class="layui-form-item" style="display: inline-block; margin-bottom: 0;">
+                        <label class="layui-form-label width70">手机号码</label>
+                        <div class="layui-input-block" style="margin-left: 100px;">
+                            <input type="text" id="phone" name="phone" value="${oe.phone!'' }" placeholder="请输入手机号码" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label width70">产品名称</label>
+                        <div class="layui-input-block" style="margin-left: 100px;">
+                            <input type="text"  name="product.productName" value="<#if oe.product??>${oe.product.productName!}</#if>" placeholder="请输入产品名称" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label width70">订单号</label>
+                        <div class="layui-input-block" style="margin-left: 100px;">
+                            <input type="text" id="orderNo" name="orderNo" value="${oe.orderNo!'' }" placeholder="请输入订单号" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label width70">订单状态:</label>
+                        <select id="status" name="status" lay-verify="" class="layui-input" style="width: 220px;" >
+                            <option value="">请选择订单状态</option>
+                            <option value="0" <#if oe.status?? && oe.status == 0>selected</#if>>待处理</option>
+                            <option value="1" <#if oe.status?? && oe.status == 1>selected</#if>>审核中</option>
+                            <option value="2" <#if oe.status?? && oe.status == 2>selected</#if>>取消</option>
+                            <option value="3" <#if oe.status?? && oe.status == 3>selected</#if>>待发货</option>
+                            <option value="4" <#if oe.status?? && oe.status == 4>selected</#if>>已发货</option>
+                            <option value="5" <#if oe.status?? && oe.status == 5>selected</#if>>完成</option>
+                            <option value="6" <#if oe.status?? && oe.status == 6>selected</#if>>锁定</option>
+                            <option value="7" <#if oe.status?? && oe.status == 7>selected</#if>>超时取消</option>
+                            <option value="99" <#if oe.status?? && oe.status == 99>selected</#if>>删除</option>
+                        </select>
+                    </div>
+                    <br>
+                    <br>
+                    <@p.permission bizCode='${bizCode}08'>
+                    <div class="layui-inline">
+                        <label class="layui-form-label width70">所属渠道:</label>
+                        <select id="user.channelId" name="user.channelId" lay-verify="" class="layui-input" style="width: 220px;" >
+                            <option value="">请选择所属渠道</option>
+                            <#if channelList??>
+                                <#list channelList as channel>
+                                    <option value="${channel.id}"
+                                    <#if (oe.user)?? && (oe.user.channelId == channel.id) >
+                                        selected=selected
+                                    </#if>
+                                    >${channel.channelName!''}</option>
+                                </#list>
+                            </#if>
+                        </select>
+                    </div>
+                    </@p.permission>
+                    <div class="layui-inline">
+                        <label class="layui-form-label width70">处理状态:</label>
+                        <select id="dealStatus" name="dealStatus" lay-verify="" class="layui-input" style="width: 220px;" >
+                            <option value="">请选择处理状态</option>
+                            <option value="0" <#if oe.dealStatus?? && oe.dealStatus == 0>selected</#if>>待处理</option>
+                            <option value="1" <#if oe.dealStatus?? && oe.dealStatus == 1>selected</#if>>已处理</option>
+                            <option value="2" <#if oe.dealStatus?? && oe.dealStatus == 2>selected</#if>>处理失败</option>
+                            <option value="3" <#if oe.dealStatus?? && oe.dealStatus == 3>selected</#if>>状态已回查</option>
+                        </select>
+                    </div>
+
+                    <label>&nbsp;&nbsp;&nbsp;&nbsp;兑换时间:&nbsp;&nbsp;</label>
+                    <div class="layui-inline">
+                        <#if  oe.exchangeTimeBegin??>
+                            <input type="text" class="layui-input test-item" name="exchangeTimeBegin"
+                                   value="${oe.exchangeTimeBegin }">
+                            <#else>
+                                <input type="text" class="layui-input test-item" name="exchangeTimeBegin" placeholder="请选择">
+                        </#if>
+                    </div>
+                    &nbsp;--&nbsp;&nbsp;
+                    <div class="layui-inline">
+                        <#if  oe.exchangeTimeEnd??>
+                            <input type="text" class="layui-input test-item" name="exchangeTimeEnd"
+                                   value="${oe.exchangeTimeEnd }">
+                            <#else>
+                                <input type="text" class="layui-input test-item" name="exchangeTimeEnd" placeholder="请选择">
+                        </#if>
+                    </div>
+                    <button style="margin-top: -3px;" class="layui-btn ">搜索</button>
+                </form>
+
+            </div>
+        </div>
+    </div>
+    <!-- -->
+    <div class="r-content r-btn-area">
+        <!-- 按钮区域 -->
+        <blockquote class="site-text layui-elem-quote">
+            <@p.permission bizCode='${bizCode }06'>
+                <button data-id="" data-method="export" class="layui-btn export"><i class="layui-icon">&#xe601;</i> 导出订单</button>
+            </@p.permission>
+        <span>已勾选总计：<span id="selectedAmout">0</span>元</span>
+        </blockquote>
+    </div>
+    <!-- 内容区域-->
+    <div id="r-content" class="r-content">
+        <!-- 分页容器-->
+        <table id="page" lay-filter="page"></table>
+    </div>
+</body>
+<script type="text/javascript" src="/resource/layui/layui.js"></script>
+<!--数据按钮模板-->
+<script type="text/html" id="barBtns">
+    <@p.permission bizCode='${bizCode }02'>
+        <a class="layui-btn layui-btn-mini" lay-event="detail">订单详情</a>
+    </@p.permission>
+    <@p.permission bizCode='${bizCode }04'>
+        <!--订单处理类型是发码，处理状态是成功则不显示-->
+        {{# if (d.dealType == 1 && d.dealStatus != 1) { }}
+            <a class="layui-btn layui-btn-warm layui-btn-mini" lay-event="resendcode">重新发码</a>
+        {{# } }}
+    </@p.permission>
+    <@p.permission bizCode='${bizCode }05'>
+        <!-- 订单处理类型是红包，处理状态是成功则不显示-->
+        {{# if (d.dealType == 2 && (d.dealStatus != 1 && d.dealStatus != 3)) { }}
+            <a class="layui-btn layui-btn-danger layui-btn-mini" lay-event="resendredpacket">重发红包</a>
+        {{# } }}
+    </@p.permission>
+</script>
+<script>
+    /* 获取产品名称 */
+    function getName(data) {
+        return data.product.productName;
+    }
+
+    /* 延迟加载数据，调用接口重新发码或红包后 */
+    function reload(index) {
+        layer.close(index);
+        layui.table.reload("table");
+    }
+    var $;
+    layui.use(['element', 'table', 'jquery', 'layer', 'laydate'], function() {
+        $ = layui.jquery, //使用自带jQuery模块,不需要另外引入jquery文件
+                table = layui.table, //内容区域表格渲染需要引入
+                form = layui.form,
+                layer = layui.layer; //弹出窗体
+                laydate = layui.laydate;
+        //获取数据渲染表格
+        table.render({ //渲染表格数据
+            id: 'table',//设置ID在获取复选框数据时候需要用到
+            elem: '#page', //数据容器
+            page: true, //开启分页
+            even: true, //开启隔行背景效果
+            limit: 20, //默认每页显示20条
+            limits: layui.globalConfig.limits, //可选每页显示条数
+            cols:[[ //设置表头信息
+                {checkbox: true, width: 140, fixed: true}, //复选框
+                {field: 'orderNo', title: '订单号', width: 180, fixed: true}, //订单号
+                {field: 'user.channelName', title: '所属渠道', width: 180, fixed: true}, //所属渠道
+                {field: 'phone', title: '手机号码', width: 130, sort: true, fixed: true}, //手机号码
+                {field: 'product.productName', title: '产品名称', width: 160, sort: true},//产品名称
+                {field: 'integral', title: '兑换积分', width: 95, sort: true}, //兑换积分
+                {field: 'total', title: '兑换数量', width: 95, sort: true}, //兑换数量
+                {field: 'productPrice', title: '产品售价(元)', width: 120, sort: true},//产品售价
+                {field: 'amount', title: '总金额(元)', width: 120}, //订单总价值金额
+                {field: 'createTime', title: '兑换日期', width: 165, sort: true}, //下单时间
+                {field: 'statusStr', title: '订单状态', width: 95, sort: true}, //订单状态
+                {field: 'dealStatusStr', title: '处理状态', width: 100, sort: true}, //处理状态
+                {field: 'detail_id', title: '红包订单号', dataDeal:'getDetailId', width: 160, sort: true}, //红包订单号
+                {field: 'redPackageStatusStr', title: '红包状态', width: 160, sort: true}, //红包订单号
+                {field: 'remark', title: '备注', width: 160}, //备注
+                {fixed: 'right', title: '操作', width: 200, align: 'center', toolbar: '#barBtns'} //操作按钮
+            ]],
+            url: "/admin/lifeIntegral/orderExchange/o_list.json", //翻页请求url
+            method: "POST", //请求HTTP类型
+            where: {
+                bizCode : '${bizCode!"" }' + '01',
+                phone : $('#phone').val(),
+                orderNo : $('#orderNo').val(),
+                status : $("#status option:selected").val(),
+                dealStatus :$("#dealStatus option:selected").val(),
+                exchangeTimeBegin: "${oe.exchangeTimeBegin!''}",
+                exchangeTimeEnd: "${oe.exchangeTimeEnd!''}",
+                "product.productName" : "<#if oe.product??>${oe.product.productName!''}<#else/></#if>",
+                "user.channelId" : "<#if oe.user??>${oe.user.channelId!''}<#else/></#if>",
+
+            }, //请求参数
+            request: {//请求
+                pageName: 'pageNum', //页码的参数名称，默认：page,参数会自动获取并传递到后台
+                limitName: 'pageSize' //每页数据量的参数名，默认：limit,参数会自动获取并传递到后台
+            },
+            response: {//响应
+                statusCode: '00000', //成功的状态码，默认：0
+                statusName: 'status', //数据状态的字段名称，默认：code
+                msgName: 'msg', //状态信息的字段名称，默认：msg
+                countName: 'count', //数据总数的字段名称，默认：count
+                dataName: 'data' //数据列表的字段名称，默认：data
+            },
+            done: function(){
+                var checks = table.checkStatus('table');
+                var amout = 0;
+                for(var i=0;i<checks.data.length;i++){
+                    amout += checks.data[i].amount;
+                }
+                $("#selectedAmout").text(amout);
+            }
+        });
+        //监听工具栏
+        table.on('tool(page)', function(obj) {
+            var data = obj.data;
+            if (obj.event == 'detail') {//查看订单详情
+                //JSON.stringify(data)该方法可以获取到完整的json格式数据，包括没有展示出来的数据
+                //多窗口模式，层叠置顶
+                layer.open({
+                    type: 2, //返回iframe类型
+                    title: "订单明細", //弹出框标题
+                    area: ['720px', '500px'], //设置宽高
+                    shade: 0.3, //遮罩效果
+                    maxmin: true, //允许最大最小化
+                    btn: [], //按钮
+                    content: "/admin/lifeIntegral/orderExchange/v_detail.do?bizCode=${bizCode }02&id=" + data.id, //请求URL获取页面
+                    zIndex: 999, //重点1：层级
+                    success: function(layero, index) {//成功后注入事件，不然js在页面完成完成之前就执行，点击没有效果
+                        layer.setTop(layero); //重点2
+                    }
+                });
+            } else if (obj.event == 'resendcode') {//重新发码
+                layer.confirm("确定重新发码吗？", {title: "温馨提示：", shade: 0.3}, function(index) {
+                    $.ajax({
+                        type : "POST",
+                        url : "/admin/lifeIntegral/orderExchange/reSendCode.do",
+                        dataType : "JSON",
+                        data : {id : data.id, bizCode : '${bizCode }04'},
+                        success : function(data) {
+                            layer.msg(data.msg);
+                        },
+                        error : function() {
+                            layer.msg("发生未知错误，请重试！");
+                        }
+                    });
+                    layer.close(index);
+                });
+            } else if (obj.event == 'resendredpacket') {//重新发红包
+                layer.confirm("确定重新发红包吗？", {title: "温馨提示：", shade: 0.3}, function(index) {
+                    $.ajax({
+                        type : "POST",
+                        url : "/admin/lifeIntegral/orderExchange/reSendRedPacket.do",
+                        dataType : "JSON",
+                        async : false,
+                        data : {id : data.id, bizCode : '${bizCode }05'},
+                        success : function(data) {
+                            layer.msg(data.msg);
+                        },
+                        error : function() {
+                            layer.msg("发生未知错误，请重试！");
+                        }
+                    });
+                    setTimeout(reload(index), 2000);
+                });
+            }
+        });
+        //以复选框事件为例
+        table.on('checkbox(page)', function(obj){
+            var checks = table.checkStatus('table'); //test即为基础参数id对应的值
+            var amout = 0;
+            for(var i=0;i<checks.data.length;i++){
+                amout += checks.data[i].amount;
+            }
+            $("#selectedAmout").text(amout);
+        });
+        var active = {
+            export: function () {//导出订单
+                $("#searchForm").attr("action","/admin/lifeIntegral/orderExchange/export.do?bizCode=${bizCode}06");
+                $("#searchForm").submit();
+                $("#searchForm").attr("action","/admin/lifeIntegral/orderExchange/v_list.do?bizCode=${bizCode}");
+            }
+        }
+        //为按钮注入事件
+        $('.export').on('click', function() {
+            var $othis = $(this), $method = $othis.data('method');
+            active[$method] ? active[$method].call(this, $othis) : '';
+        });
+        lay('.test-item').each(function () {
+            laydate.render({
+                elem: this
+                , trigger: 'click'
+            });
+        })
+    });
+    function getDetailId(data){
+        var respMsg = data.respMsg;
+        if(respMsg){
+            try{
+                var respObj = $.parseJSON(respMsg);
+                var returnVal= respObj.detail_id||respObj.send_listid;
+                return returnVal?returnVal:""
+            } catch (err){
+            }
+        }
+        return "";
+    }
+</script>
+</html>

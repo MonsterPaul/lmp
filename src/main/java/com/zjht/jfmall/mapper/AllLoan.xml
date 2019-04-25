@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zjht.jfmall.dao.AllLoanDao">
+       
+       <resultMap id="BaseResultMap" type="com.zjht.jfmall.entity.AllLoan">
+              <id column="id" property="id" />
+              <result column="name" property="name" />
+              <result column="logo" property="logo" />
+              <result column="type" property="type" />
+              <result column="status" property="status" />
+              <result column="introduction" property="introduction" />
+              <result column="amount" property="amount" />
+              <result column="deadline" property="deadline" />
+              <result column="passing_rate" property="passingRate" />
+              <result column="year_rate" property="yearRate" />
+              <result column="raiders" property="raiders" />
+              <result column="apply_condition" property="applyCondition" />
+              <result column="description" property="description" />
+              <result column="apply_num" property="applyNum" />
+              <result column="regist_link" property="registLink" />
+              <result column="top" property="top" />
+              <result column="pill_way" property="pillWay" />
+              <result column="price" property="price" />
+              <result column="settlement_way" property="settlementWay" />
+              <result column="person" property="person" />
+              <result column="phone" property="phone" />
+              <result column="create_time" property="createTime" />
+              <result column="create_id" property="createId" />
+              <result column="further_id" property="furtherId" />
+              <result column="operation_id" property="operationId" />
+              <result column="operation_time" property="operationTime" />
+              <result column="top_time" property="topTime" />
+              <result column="balance" property="balance" />
+       </resultMap>
+
+       <resultMap id="IncludeUser" type="com.zjht.jfmall.entity.AllLoan" extends="BaseResultMap">
+              <association property="user" column="further_id" select="com.zjht.jfmall.dao.UserDao.get" />
+       </resultMap>
+
+       <sql id="Base_Where">
+              <where>
+                 <if test="param.name != null and param.name != ''">
+                    and name like CONCAT('%', #{param.name }, '%')
+                 </if>
+                 <if test="param.status != null and param.status != ''">
+                    and status = #{param.status }
+                 </if>
+                 <if test="param.top != null and param.top != ''">
+                    and top = #{param.top }
+                 </if>
+                 <if test="param.furtherId != null and param.furtherId != ''">
+                    and further_id = #{param.furtherId }
+                 </if>
+                 <if test="param.exchangeTimeBegin != null and param.exchangeTimeBegin != '' ">
+                     <![CDATA[  and create_time >= #{param.exchangeTimeBegin}  ]]>
+                 </if>
+                 <if test="param.exchangeTimeEnd!=null and param.exchangeTimeEnd!='' ">
+                     <![CDATA[  and create_time <=  '${param.exchangeTimeEnd} 23:59:59']]>
+                 </if>
+              </where>
+       </sql>
+
+       <select id="findPage" resultMap="IncludeUser">
+          select * from all_loan
+              <include refid="Base_Where" />
+              order by top asc, top_time desc
+       </select>
+
+       <update id="updateStatus">
+              update all_loan set status = #{param.status }, operation_id = #{param.operationId }, operation_time = #{param.operationTime } where id = #{param.id }
+       </update>
+
+       <update id="updateTop">
+              update all_loan set top = #{param.top }, operation_id = #{param.operationId },
+                operation_time = #{param.operationTime }, top_time = now() where id = #{param.id }
+       </update>
+
+       <select id="findById" resultMap="BaseResultMap">
+              select * from all_loan where id = #{id }
+       </select>
+
+       <update id="update">
+              update all_loan set name = #{param.name }, regist_link = #{param.registLink },
+              status = #{param.status }, top = #{param.top },
+              amount = #{param.amount }, deadline = #{param.deadline },
+              type = #{param.type }, logo = #{param.logo },
+              passing_rate = #{param.passingRate }, year_rate = #{param.yearRate },
+              apply_num = #{param.applyNum }, pill_way = #{param.pillWay },
+              settlement_way = #{param.settlementWay }, price = #{param.price },
+              person = #{param.person }, phone = #{param.phone },
+              balance = #{param.balance }, introduction = #{param.introduction },
+              raiders = #{param.raiders }, apply_condition = #{param.applyCondition },
+              description = #{param.description },
+              operation_id = #{param.operationId }, operation_time = #{param.operationTime }, top_time = now() where id = #{param.id }
+       </update>
+
+       <update id="recharge">
+              update all_loan set balance = balance + #{param.recharge } where id = #{param.id }
+       </update>
+
+    <select id="getAllLoanList" resultMap="BaseResultMap">
+        select * from all_loan where status=0
+        <if test="param.type != null and param.type != ''">
+            and type =#{param.type }
+        </if>
+        <if test="param.amount != null and param.amount != ''">
+            and amount = #{param.amount }
+        </if>
+        <if test="param.deadline != null and param.deadline != ''">
+            and deadline = #{param.deadline }
+        </if>
+
+        order by top asc, top_time desc limit ${(num-1)*size},${size}
+    </select>
+    <update id="soldOut">
+        <![CDATA[ update all_loan set status = 1 where balance <= 0 or balance < price]]>
+    </update>
+
+</mapper>

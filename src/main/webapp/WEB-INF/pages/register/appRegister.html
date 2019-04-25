@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximun-scale=1.0, user-scalable=no">
+		<script src="../../../resource/js/jquery-1.10.2.js"></script>
+		<script src="../../../resource/js/gt.js"></script>
+		<title>九信金融注册</title>
+		<!--<script type="text/javascript" src="js/jquery-1.10.2.js" ></script>-->
+		<style>
+			html {
+				font-size: 100px;
+			}
+			
+			@media screen and (min-width: 320px) {
+				html {
+					font-size: 42.667px;
+				}
+			}
+			
+			@media screen and (min-width: 360px) {
+				html {
+					font-size: 48px;
+				}
+			}
+			
+			@media screen and (min-width: 375PX) {
+				html {
+					font-size: 50px;
+				}
+			}
+			
+			@media screen and (min-width: 384px) {
+				html {
+					font-size: 51.2px;
+				}
+			}
+			
+			@media screen and (min-width: 400px) {
+				html {
+					font-size: 53.3px;
+				}
+			}
+			
+			@media screen and (min-width: 412px) {
+				html {
+					font-size: 54.9px;
+				}
+			}
+			
+			@media screen and (min-width: 414px) {
+				html {
+					font-size: 55.2px;
+				}
+			}
+			
+			@media screen and (min-width: 424px) {
+				html {
+					font-size: 56.5px;
+				}
+			}
+			
+			@media screen and (min-width: 480px) {
+				html {
+					font-size: 64px;
+				}
+			}
+			
+			@media screen and (min-width: 540px) {
+				html {
+					font-size: 72px;
+				}
+			}
+			
+			@media screen and (min-width: 720px) {
+				html {
+					font-size: 96px;
+				}
+			}
+			
+			@media screen and (min-width: 750px) {
+				html {
+					font-size: 100px;
+				}
+			}
+			
+			@media screen and (min-width: 768px) {
+				html {
+					font-size: 102.4px;
+				}
+			}
+			
+			@media screen and (min-width: 800px) {
+				html {
+					font-size: 106.7px;
+				}
+			}
+			
+			@media screen and (min-width: 980px) {
+				html {
+					font-size: 130.7px;
+				}
+			}
+			
+			@media screen and (min-width: 1080px) {
+				html {
+					font-size: 144px;
+				}
+			}
+			
+			@media screen and (min-width: 1152px) {
+				html {
+					font-size: 153.6px;
+				}
+			}
+			
+			@media screen and (min-width: 1366px) {
+				html {
+					font-size: 182.1px;
+				}
+			}
+			
+			@media screen and (min-width: 1440px) {
+				html {
+					font-size: 192px;
+				}
+			}
+			
+			@media screen and (min-width: 2160px) {
+				html {
+					font-size: 288px;
+				}
+			}
+			
+			html,
+			body,
+			div,
+			input {
+				margin: 0;
+				padding: 0;
+			}
+			
+			html,
+			body {
+				width: 100%;
+				height: 100%;
+			}
+			
+			.app-wrap {
+				padding-top: 4.7rem;
+				height: 100%;
+				box-sizing: border-box;
+				background-image: url(../../../resource/img/jx_registe_bg.png);
+				background-repeat: no-repeat;
+				background-size: 100%;
+				background-color: #f8584b;
+				font-size: .12rem;
+			}
+			
+			#app {}
+			
+			.form {
+				margin: 0 .4rem 0 .4rem;
+				border-radius: .15rem;
+				background-color: #ffffff;
+				padding: .6rem;
+			}
+			
+			.input-wrap {
+				padding-top: .2rem;
+				border-bottom: 1px solid #f0f0f0;
+			}
+			
+			.input-wrap input {
+				height: .6rem;
+				font-size: .3rem;
+				line-height: .6rem;
+				margin-bottom: .12rem;
+				box-sizing: border-box;
+				outline: none;
+				border: 0;
+				color: #333333;
+				padding: 0 .16rem;
+				width: 100%;
+				box-sizing: border-box;
+			}
+			
+			.flex-sa {
+				display: flex;
+				justify-content: flex-start;
+				align-items: baseline;
+				width: 100%;
+			}
+			
+			.flex-sa>div:first-child {
+				width: 3.65rem;
+			}
+			
+			.get-core-btn {
+				font-size: .3rem;
+				color: #ff2e32;
+			}
+			.get-core-btn >div{
+				text-align: center;
+			}
+			.registe-btn{
+				margin-top: .3rem;
+				width: 100%;
+				margin-bottom: .2rem;
+			}
+			.registe-btn img{
+				width: 100%;
+				display: block;
+				height: auto;
+			}
+			.agree-protocol{
+				color: #666666;
+				text-align: center;
+				font-size: .22rem;
+			}
+			.tips-msg{
+				display: inline-block;
+				display: none;
+				position: fixed;
+				top: 50%;
+				left: 50%;
+				z-index: 9999;
+				transform: translate(-50%,-50%);
+				background: rgba(0,0,0,.6);
+				font-size: .26rem;
+				padding: .17rem .3rem;
+				border-radius: .1rem;
+				color: #FFFFFF;
+			}
+			.load-box{
+				position: fixed;
+				z-index: 9999999;
+				top: 0%;
+				left: 0%;
+				width:100%;
+				height: 100%;
+				background: rgba(0,0,0,.5);
+			}
+			.load-bg{
+				position: fixed;
+				top: 50%;
+				left: 50%;
+				transform: translate(-50%,-50%);
+				-webkit-transform: translate(-50%,-50%);
+				-moz-transform:translate(-50%,-50%);				
+			}
+			.wrap{
+				width: 100%;
+				height: auto;
+				position: relative;
+			}
+			.wrap >img{
+				width: 4.4rem;
+				height: auto;
+				display: block;
+			}
+			.load-btn >img{
+				width: 2.6rem;
+				height: auto;
+				display: block;
+				margin: 0 auto;
+			}
+			.load-btn{
+				position: absolute;
+				bottom: .5rem;
+				width: 100%;
+			}
+			.bind-phone{
+				position: absolute;
+				top: 3rem;
+				text-align: center;
+				font-size: .2rem;
+				width: 100%;
+				color: #333333;
+			}
+			#bindPhone{
+				color: #d83534;
+			}
+			#captchaBox{
+				height: 44px;
+			}
+			.link{
+				color: #1b66c7;
+				text-decoration: none;
+			}
+		</style>
+	</head>
+
+	<body>
+		
+		<div class="app-wrap">
+			<div class="load-box" style="display: none;">
+				<div class="load-bg">
+					<div class="wrap">
+						<img src="../../../resource/img/load-bg.png">
+						<div class="bind-phone">
+							已经绑定到您的手机
+							<div id="bindPhone">
+								
+							</div>
+						</div>
+						<div class="load-btn" onclick="loadApp()">
+							<img src="../../../resource/img/load-btn.png">
+						</div>
+					</div>
+					
+				</div>
+			</div>
+			<div class="tips-msg">
+				发送成功!
+			</div>
+			<div id="app">
+				<input type="hidden" id="invitationId" value="${invitationId}">
+				<div class="form">
+					<div class="input-wrap">
+						<input type="text" id="phone" placeholder="请输入手机号码" onkeyup="this.value=this.value.replace(/\D/g,'')" onafterpaste="this.value=this.value.replace(/\D/g,'')">
+					</div>
+					<div class="input-wrap">
+						<input type="password" id="password" placeholder="请输入密码">
+					</div>
+					<div class="input-wrap flex-sa">
+						<div>
+							<input type="text" id="captcha" placeholder="请输入验证码">
+						</div>
+						
+						<div class="get-core-btn" style="flex: 1;">
+							<div onclick="getPhoneCheckedMsg()" id="getCoreBtn" style="display: block;">
+								获取验证码
+							</div>
+							<div id="countTime" style="display: none;">
+								
+							</div>
+						</div>
+					</div>
+					<div id="captchaBox"></div>
+					<div class="registe-btn" onclick="submitRegiste()">
+						<img src="../../../resource/img/jx_registe_btn.png">
+					</div>
+					<div class="agree-protocol">
+						注册即代表同意&nbsp; <a  class="link" href="http://jx.renrenxin.top/appApi/invitation/Untitled">《用户注册协议》</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+	<script>
+		//极限验证
+		var flag=0
+		function initCheck(){
+		   	$.ajax({
+		    // 获取id，challenge，success（是否启用failback）
+		  //  url:'https://api.geetest.com/ajax.php?t=' + (new Date()).getTime(), // 加随机数防止缓存,
+		   url: "https://www.geetest.com/demo/gt/register-click?t=" + (new Date()).getTime(), // 加随机数防止缓存
+		    type: "get",
+		    dataType: "json",
+		    success: function (data) {
+		        // 使用initGeetest接口  
+		        // 参数1：配置参数
+		        // 参数2：回调，回调的第一个参数验证码对象，之后可以使用它做appendTo之类的事件
+		        initGeetest({  
+		            gt: data.gt,
+		            width:'100%',
+		            challenge: data.challenge,
+		            product: 'bind', // 产品形式，包括：float，embed，popup。注意只对PC版验证码有效
+		            offline: !data.success // 表示用户后台检测极验服务器是否宕机，与SDK配合，用户一般不需要关注
+		        }, handlerPopup);
+		    }
+		});
+		   }
+		   function handlerPopup(captchaObj){
+		   	// captchaObj.appendTo("#getCoreBtn"); //将验证按钮插入到宿主页面中captchaBox元素内
+		   	 document.getElementById('getCoreBtn').addEventListener('click', function () {
+		   	 	var domPhone=document.getElementById('phone')
+				if(domPhone.value==''){
+					tipsShow('手机号码为空!')
+					return false
+				}
+				if(domPhone.value.length<11){
+					tipsShow('手机号码输入有误!')
+					return false
+				}
+				if(flag==0){
+					captchaObj.verify();
+				}
+		    });
+		    captchaObj.onReady(function(){
+		      //your code
+		    }).onSuccess(function(){
+		      	checkSuccessSendMsg()
+		    }).onError(function(){
+		      //your alertcode
+		      flag=0
+		    })
+		   }
+
+		function showLoadDialog(){
+			var loadBox=document.getElementsByClassName('load-box')[0]
+			var bindPhone=document.getElementById('bindPhone')
+			var phoneNumber=document.getElementById('phone').value
+			bindPhone.innerText=phoneNumber
+			loadBox.style.display='block'
+		}
+		function loadApp(){
+			window.location.href='http://jx.renrenxin.top/appApi/invitation/appDownload.html';
+		}
+		function Ajax(type, url, data, success, failed) {
+			// 创建ajax对象
+			var xhr = null;
+			if(window.XMLHttpRequest) {
+				xhr = new XMLHttpRequest();
+			} else {
+				xhr = new ActiveXObject('Microsoft.XMLHTTP')
+			}
+
+			var type = type.toUpperCase();
+			// 用于清除缓存
+			var random = Math.random();
+
+			if(typeof data == 'object') {
+				var str = '';
+				for(var key in data) {
+					str += key + '=' + data[key] + '&';
+				}
+				data = str.replace(/&$/, '');
+			}
+
+			if(type == 'GET') {
+				if(data) {
+					xhr.open('GET', url + '?' + data, true);
+				} else {
+					xhr.open('GET', url + '?t=' + random, true);
+				}
+				xhr.send();
+
+			} else if(type == 'POST') {
+				xhr.open('POST', url, true);
+				// 如果需要像 html 表单那样 POST 数据，请使用 setRequestHeader() 来添加 http 头。
+				xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+				xhr.send(data);
+			}
+
+			// 处理返回数据
+			xhr.onreadystatechange = function() {
+				if(xhr.readyState == 4) {
+					if(xhr.status == 200) {
+						success(xhr.responseText);
+					} else {
+						if(failed) {
+							failed(xhr.status);
+						}
+					}
+				}
+			}
+		}
+		function countTime(sec){	
+			var inv=setInterval(function(){
+				sec--
+				document.getElementById('getCoreBtn').style.display='none'
+				document.getElementById('countTime').style.display='block'
+				document.getElementById('countTime').innerHTML=sec+'s'
+				if(sec==0){
+					clearInterval(inv)
+					flag=0
+					document.getElementById('getCoreBtn').style.display='block'
+					document.getElementById('countTime').style.display='none'
+				}
+			},1000)
+		}
+		function getPhoneCheckedMsg() {
+			// 获取手机验证码
+			
+			var domPhone=document.getElementById('phone')
+			if(domPhone.value==''){
+				tipsShow('手机号码为空!')
+				return false
+			}
+			if(domPhone.value.length<11){
+				tipsShow('手机号码输入有误!')
+				return false
+			}
+		}
+		initCheck()
+		function checkSuccessSendMsg(){
+			var domPhone=document.getElementById('phone')
+			var phoneNumber= domPhone.value
+			var params =  "phone=" + phoneNumber
+			Ajax('post', 'http://jx.renrenxin.top/appApi/appUsers/sendMs', params, function(res) {
+				var getData=JSON.parse(res)
+				if(getData.status=='200'){
+					tipsShow('发送成功!')
+					flag=1
+					countTime(60)
+				}else{
+					var msg=getData.msg
+					tipsShow(msg)
+				}
+			})
+		}
+		function tipsShow(msg){
+			var dom=document.getElementsByClassName('tips-msg')[0]
+			dom.innerHTML=msg
+			dom.style.display='inline-block'
+			setTimeout(function(){
+				dom.style.display='none'
+			},1500)
+		}
+		function GetQueryString(name){
+		     var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
+		     var r = window.location.search.substr(1).match(reg);
+		     if(r!=null)return  unescape(r[2]); return null;
+		}
+		function submitRegiste(){
+			var phoneNumber=document.getElementById('phone').value.toString()
+			var pwdString=document.getElementById('password').value.toString()
+			var captcha=document.getElementById('captcha').value.toString()
+			var invitationId=document.getElementById('invitationId').value
+			var domPhone=document.getElementById('phone')
+			if(phoneNumber==''){
+				tipsShow('手机号码为空!')
+				document.getElementById('phone').focus()
+				return false
+			}
+			if(phoneNumber.length<11){
+				tipsShow('手机号码输入有误!')
+				document.getElementById('phone').focus()
+				return false
+			}
+			if(pwdString==''){
+				tipsShow('请输入密码!')
+				document.getElementById('password').focus()
+				return false
+			}
+			if(pwdString.length<5){
+				tipsShow('密码不少于5位!')
+				document.getElementById('password').value=''
+				document.getElementById('password').focus()
+				return false
+			}
+			if(captcha==''){
+				tipsShow('请输入验证码!')
+				document.getElementById('captcha').focus()
+				return false
+			}
+			var params="phone="+phoneNumber+"&pwd="+pwdString+"&invitationType=2"+"&captcha="+captcha+"&invitationId="+invitationId
+			Ajax('post', 'http://jx.renrenxin.top/appApi/appUsers/register', params, function(res) {
+				var getData=JSON.parse(res)
+				if(getData.status=='200'){
+					tipsShow('注册成功!')
+					setTimeout(function(){
+						showLoadDialog()
+					},1000)
+				}else{
+					var msg=getData.msg
+					tipsShow(msg)
+				}
+			})
+		}
+	</script>
+
+</html>

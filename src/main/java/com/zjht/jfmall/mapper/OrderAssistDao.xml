@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zjht.jfmall.dao.OrderAssistDao">
+  <resultMap id="BaseResultMap" type="com.zjht.jfmall.entity.OrderAssist">
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="order_id" jdbcType="VARCHAR" property="orderId" />
+    <result column="assistCode" jdbcType="VARCHAR" property="assistcode" />
+    <result column="mobile" jdbcType="VARCHAR" property="mobile" />
+    <result column="respCode" jdbcType="VARCHAR" property="respcode" />
+    <result column="respMsg" jdbcType="VARCHAR" property="respmsg" />
+    <result column="barCode" jdbcType="VARCHAR" property="barcode" />
+    <result column="couponCode" jdbcType="VARCHAR" property="couponcode" />
+    <result column="couponName" jdbcType="VARCHAR" property="couponname" />
+    <result column="sendTime" jdbcType="TIMESTAMP" property="sendtime" />
+    <result column="parPrice" jdbcType="DECIMAL" property="parprice" />
+    <result column="status" jdbcType="VARCHAR" property="status" />
+    <result column="endTime" jdbcType="TIMESTAMP" property="endtime" />
+    <result column="refundId" jdbcType="VARCHAR" property="refundid" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, order_id, assistCode, mobile, respCode, respMsg, barCode, couponCode, couponName, 
+    sendTime, parPrice, status, endTime, refundId
+  </sql>
+  <sql id="Base_Where_Clause">
+    <where>
+      <if test="param.id!=null and param.id!=''">
+        and mt.id=#{param.id}
+      </if>
+      <if test="param.orderId!=null and param.orderId!=''">
+        and mt.order_id=#{param.orderId}
+      </if>
+      <if test="param.assistcode!=null and param.assistcode!=''">
+        and mt.assistCode=#{param.assistcode}
+      </if>
+      <if test="param.mobile!=null and param.mobile!=''">
+        and mt.mobile=#{param.mobile}
+      </if>
+      <if test="param.respcode!=null and param.respcode!=''">
+        and mt.respCode=#{param.respcode}
+      </if>
+      <if test="param.respmsg!=null and param.respmsg!=''">
+        and mt.respMsg=#{param.respmsg}
+      </if>
+      <if test="param.barcode!=null and param.barcode!=''">
+        and mt.barCode=#{param.barcode}
+      </if>
+      <if test="param.couponcode!=null and param.couponcode!=''">
+        and mt.couponCode=#{param.couponcode}
+      </if>
+      <if test="param.couponname!=null and param.couponname!=''">
+        and mt.couponName=#{param.couponname}
+      </if>
+      <if test="param.sendtime!=null and param.sendtime!=''">
+        and mt.sendTime=#{param.sendtime}
+      </if>
+      <if test="param.parprice!=null and param.parprice!=''">
+        and mt.parPrice=#{param.parprice}
+      </if>
+      <if test="param.status!=null and param.status!=''">
+        and mt.status=#{param.status}
+      </if>
+      <if test="param.endtime!=null and param.endtime!=''">
+        and mt.endTime=#{param.endtime}
+      </if>
+      <if test="param.refundid!=null and param.refundid!=''">
+        and mt.refundId=#{param.refundid}
+      </if>
+    </where>
+  </sql>
+  <select id="selectById" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_order_assist mt
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+  <select id="selectListByObject" parameterType="com.zjht.jfmall.entity.OrderAssist" resultMap="BaseResultMap">
+    select
+    <if test="param.distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from t_order_assist mt
+    <if test="param != null">
+      <include refid="Base_Where_Clause" />
+    </if>
+    <if test="param.orderByClause != null">
+      order by ${param.orderByClause}
+    </if>
+  </select>
+  <insert id="insert" parameterType="com.zjht.jfmall.entity.base.BaseOrderAssist">
+    <selectKey keyProperty="id" order="BEFORE" resultType="java.lang.String">
+      SELECT nextval('SEQ_ORDER_ASSIST') as id
+    </selectKey>
+    insert into t_order_assist (id, order_id, assistCode, mobile,
+      respCode, respMsg, barCode, 
+      couponCode, couponName, sendTime, 
+      parPrice, status, endTime, 
+      refundId)
+    values (#{id,jdbcType=VARCHAR}, #{orderId,jdbcType=VARCHAR}, #{assistcode,jdbcType=VARCHAR}, #{mobile,jdbcType=VARCHAR},
+      #{respcode,jdbcType=VARCHAR}, #{respmsg,jdbcType=VARCHAR}, #{barcode,jdbcType=VARCHAR}, 
+      #{couponcode,jdbcType=VARCHAR}, #{couponname,jdbcType=VARCHAR}, #{sendtime,jdbcType=TIMESTAMP}, 
+      #{parprice,jdbcType=DECIMAL}, #{status,jdbcType=VARCHAR}, #{endtime,jdbcType=TIMESTAMP},
+      #{refundid,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.zjht.jfmall.entity.base.BaseOrderAssist">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.String">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into t_order_assist
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="orderId != null">
+        order_id,
+      </if>
+      <if test="assistcode != null">
+        assistCode,
+      </if>
+      <if test="mobile != null">
+        mobile,
+      </if>
+      <if test="respcode != null">
+        respCode,
+      </if>
+      <if test="respmsg != null">
+        respMsg,
+      </if>
+      <if test="barcode != null">
+        barCode,
+      </if>
+      <if test="couponcode != null">
+        couponCode,
+      </if>
+      <if test="couponname != null">
+        couponName,
+      </if>
+      <if test="sendtime != null">
+        sendTime,
+      </if>
+      <if test="parprice != null">
+        parPrice,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="endtime != null">
+        endTime,
+      </if>
+      <if test="refundid != null">
+        refundId,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="orderId != null">
+        #{orderId,jdbcType=VARCHAR},
+      </if>
+      <if test="assistcode != null">
+        #{assistcode,jdbcType=VARCHAR},
+      </if>
+      <if test="mobile != null">
+        #{mobile,jdbcType=VARCHAR},
+      </if>
+      <if test="respcode != null">
+        #{respcode,jdbcType=VARCHAR},
+      </if>
+      <if test="respmsg != null">
+        #{respmsg,jdbcType=VARCHAR},
+      </if>
+      <if test="barcode != null">
+        #{barcode,jdbcType=VARCHAR},
+      </if>
+      <if test="couponcode != null">
+        #{couponcode,jdbcType=VARCHAR},
+      </if>
+      <if test="couponname != null">
+        #{couponname,jdbcType=VARCHAR},
+      </if>
+      <if test="sendtime != null">
+        #{sendtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="parprice != null">
+        #{parprice,jdbcType=DECIMAL},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="endtime != null">
+        #{endtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="refundid != null">
+        #{refundid,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByIdSelective" parameterType="com.zjht.jfmall.entity.base.BaseOrderAssist">
+    update t_order_assist
+    <set>
+      <if test="orderId != null">
+        order_id = #{orderId,jdbcType=VARCHAR},
+      </if>
+      <if test="assistcode != null">
+        assistCode = #{assistcode,jdbcType=VARCHAR},
+      </if>
+      <if test="mobile != null">
+        mobile = #{mobile,jdbcType=VARCHAR},
+      </if>
+      <if test="respcode != null">
+        respCode = #{respcode,jdbcType=VARCHAR},
+      </if>
+      <if test="respmsg != null">
+        respMsg = #{respmsg,jdbcType=VARCHAR},
+      </if>
+      <if test="barcode != null">
+        barCode = #{barcode,jdbcType=VARCHAR},
+      </if>
+      <if test="couponcode != null">
+        couponCode = #{couponcode,jdbcType=VARCHAR},
+      </if>
+      <if test="couponname != null">
+        couponName = #{couponname,jdbcType=VARCHAR},
+      </if>
+      <if test="sendtime != null">
+        sendTime = #{sendtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="parprice != null">
+        parPrice = #{parprice,jdbcType=DECIMAL},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="endtime != null">
+        endTime = #{endtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="refundid != null">
+        refundId = #{refundid,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

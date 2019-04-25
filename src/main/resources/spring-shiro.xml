@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd">
+    <!-- ============================================================================================================== -->
+
+    <context:component-scan base-package="com.zjht.jfmall.common.web.session"/>
+
+    <!-- 使用redis存储管理session -->
+    <bean id="sessionManager" class="org.apache.shiro.web.session.mgt.DefaultWebSessionManager">
+        <!-- 删除失效session -->
+        <property name="sessionValidationSchedulerEnabled" value="true"/>
+        <!-- session失效时间（毫秒） -->
+        <property name="globalSessionTimeout" value="1800000"/>
+        <property name="sessionDAO" ref="customShiroSessionDao"/>
+        <property name="sessionIdCookie" ref="shareSession"/>
+    </bean>
+    <!-- sessionIdCookie的实现,用于重写覆盖容器默认的JSESSIONID -->
+    <bean id="shareSession" class="org.apache.shiro.web.servlet.SimpleCookie">
+        <!-- cookie的name,对应的默认是 JSESSIONID -->
+        <constructor-arg name="name" value="MC_JSESSIONID"/>
+        <!-- jsessionId的path为 / 用于多个系统共享jsessionId -->
+        <property name="path" value="/"/>
+    </bean>
+    <!-- Shiro安全管理器 -->
+    <bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
+        <property name="realm" ref="customRealm"/>
+        <!--<property name="sessionManager" ref="sessionManager"/>-->
+    </bean>
+
+    <!-- 自定义Realm -->
+    <bean id="customRealm" class="com.zjht.jfmall.common.web.shiro.CustomRealm"/>
+
+    <bean id="logout" class="org.apache.shiro.web.filter.authc.LogoutFilter">
+        <property name="redirectUrl" value="/admin/index/login.html"/>
+    </bean>
+    <bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
+        <property name="securityManager" ref="securityManager"/>
+        <property name="loginUrl" value="/admin/index/login.html"/>
+        <property name="unauthorizedUrl" value="/error/403.jsp"/>
+        <property name="filterChainDefinitions">
+            <value>
+                /appApi/** = anon
+                /resource/** = anon
+                /admin/index/login.html = anon
+                /admin/index/login.do = anon
+                /admin/index/getCode.do = anon
+                /admin/index/logout.do = logout
+                /favicon.ico = anon
+                /api/** = anon
+                /upload/** = anon
+                /admin/lifeIntegral/login.html = anon
+                /admin/lifeIntegral/login.do = anon
+                /admin/lifeIntegral/userLogin.html = anon
+                /admin/lifeIntegral/userLogin.do = anon
+                /admin/lifeIntegral/updatePassword.html = anon
+                /admin/lifeIntegral/updatePassword.do = anon
+                /** = authc
+            </value>
+        </property>
+    </bean>
+    <!-- 保证实现了Shiro内部lifecycle函数的bean执行 -->
+    <bean id="lifecycleBeanPostProcessor" class="org.apache.shiro.spring.LifecycleBeanPostProcessor"/>
+    <!-- Enable Shiro Annotations for Spring-configured beans.  Only run after -->
+    <!-- the lifecycleBeanProcessor has run: -->
+    <bean class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator"
+          depends-on="lifecycleBeanPostProcessor"/>
+
+    <bean class="org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor">
+        <property name="securityManager" ref="securityManager"/>
+    </bean>
+</beans>

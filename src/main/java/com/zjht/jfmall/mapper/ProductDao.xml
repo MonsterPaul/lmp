@@ -1,0 +1,382 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zjht.jfmall.dao.ProductDao">
+    <resultMap id="BaseResultMap" type="com.zjht.jfmall.entity.Product">
+        <id column="id" jdbcType="CHAR" property="id"/>
+        <result column="product_code" jdbcType="VARCHAR" property="productCode"/>
+        <result column="category_code" jdbcType="VARCHAR" property="categoryCode"/>
+        <result column="product_name" jdbcType="VARCHAR" property="productName"/>
+        <result column="status" jdbcType="TINYINT" property="status"/>
+        <result column="gmt_create" jdbcType="TIMESTAMP" property="gmtCreate"/>
+        <result column="gmt_modified" jdbcType="TIMESTAMP" property="gmtModified"/>
+        <result column="stock_count" jdbcType="INTEGER" property="stockCount"/>
+        <result column="sale_count" jdbcType="INTEGER" property="saleCount"/>
+        <result column="product_type" jdbcType="TINYINT" property="productType"/>
+        <result column="points" jdbcType="INTEGER" property="points"/>
+        <result column="strategy_name" jdbcType="VARCHAR" property="strategyName"/>
+        <result column="out_code" jdbcType="VARCHAR" property="outCode"/>
+        <result column="page_exchange" jdbcType="VARCHAR" property="pageExchange"/>
+        <result column="page_result" jdbcType="VARCHAR" property="pageResult"/>
+        <result column="market_price" jdbcType="DECIMAL" property="marketPrice"/>
+        <result column="sale_price" jdbcType="DECIMAL" property="salePrice"/>
+        <result column="sort" jdbcType="INTEGER" property="sort"/>
+        <result column="day_stock" jdbcType="INTEGER" property="dayStock"/>
+        <result column="day_user_limit" jdbcType="INTEGER" property="dayUserLimit"/>
+    </resultMap>
+    <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.zjht.jfmall.entity.Product">
+        <result column="introduction" jdbcType="LONGVARCHAR" property="introduction"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+    id, product_code, category_code, product_name, status, gmt_create, gmt_modified,
+    stock_count, sale_count, product_type, points, strategy_name, out_code, page_exchange,
+    page_result, market_price, sale_price, introduction, sort,day_stock,day_user_limit
+  </sql>
+    <sql id="Base_Where_Clause">
+        <where>
+            <if test="param.id!=null and param.id!=''">
+                and mt.id=#{param.id}
+            </if>
+            <if test="param.productCode!=null and param.productCode!=''">
+                and mt.product_code=#{param.productCode}
+            </if>
+            <if test="param.categoryCode!=null and param.categoryCode!=''">
+                and mt.category_code=#{param.categoryCode}
+            </if>
+            <if test="param.productName!=null and param.productName!=''">
+                and mt.product_name=#{param.productName}
+            </if>
+            <if test="param.status!=null ">
+                and mt.status=#{param.status}
+            </if>
+            <if test="param.gmtCreate!=null and param.gmtCreate!=''">
+                and mt.gmt_create=#{param.gmtCreate}
+            </if>
+            <if test="param.gmtModified!=null and param.gmtModified!=''">
+                and mt.gmt_modified=#{param.gmtModified}
+            </if>
+            <if test="param.stockCount!=null and param.stockCount!=''">
+                and mt.stock_count=#{param.stockCount}
+            </if>
+            <if test="param.saleCount!=null and param.saleCount!=''">
+                and mt.sale_count=#{param.saleCount}
+            </if>
+            <if test="param.productType!=null and param.productType!=''">
+                and mt.product_type=#{param.productType}
+            </if>
+            <if test="param.points!=null and param.points!=''">
+                and mt.points=#{param.points}
+            </if>
+            <if test="param.strategyName!=null and param.strategyName!=''">
+                and mt.strategy_name=#{param.strategyName}
+            </if>
+            <if test="param.outCode!=null and param.outCode!=''">
+                and mt.out_code=#{param.outCode}
+            </if>
+            <if test="param.pageExchange!=null and param.pageExchange!=''">
+                and mt.page_exchange=#{param.pageExchange}
+            </if>
+            <if test="param.pageResult!=null and param.pageResult!=''">
+                and mt.page_result=#{param.pageResult}
+            </if>
+            <if test="param.marketPrice!=null and param.marketPrice!=''">
+                and mt.market_price=#{param.marketPrice}
+            </if>
+            <if test="param.salePrice!=null and param.salePrice!=''">
+                and mt.sale_price=#{param.salePrice}
+            </if>
+            <if test="param.dayStock!=null and param.dayStock!=''">
+                and mt.day_stock=#{param.dayStock}
+            </if>
+            <if test="param.dayUserLimit!=null and param.dayUserLimit!=''">
+                and mt.day_user_limit=#{param.dayUserLimit}
+            </if>
+            <![CDATA[ and  mt.status !=2 ]]>
+        </where>
+    </sql>
+    <select id="selectById" parameterType="java.lang.String" resultMap="ResultMapWithBLOBs">
+        select
+        <include refid="Base_Column_List"/>
+        from t_product mt
+        where id = #{id,jdbcType=CHAR}
+    </select>
+    <select id="findByCode" parameterType="java.lang.String" resultMap="ResultMapWithBLOBs">
+        select
+        <include refid="Base_Column_List"/>
+        from t_product mt
+        where product_code = #{productCode,jdbcType=VARCHAR}
+    </select>
+    <select id="selectListByObject" parameterType="com.zjht.jfmall.entity.Product" resultMap="ResultMapWithBLOBs">
+        select
+        <if test="param.distinct">
+            distinct
+        </if>
+        <include refid="Base_Column_List"/>
+        from t_product mt
+        <if test="param != null">
+            <include refid="Base_Where_Clause"/>
+        </if>
+
+        <if test="param.orderByClause != null">
+            order by ${param.orderByClause}
+        </if>
+        limit ${(param.pageNum-1)*param.pageSize},${param.pageSize}
+    </select>
+    <insert id="insert" parameterType="com.zjht.jfmall.entity.base.BaseProduct">
+        <selectKey keyProperty="id" order="AFTER" resultType="java.lang.String">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        insert into t_product (product_code, category_code, product_name,
+        status, gmt_create, gmt_modified,
+        stock_count, sale_count, product_type,
+        points, strategy_name, out_code,
+        page_exchange, page_result, market_price,
+        sale_price, introduction, sort,day_stock,day_user_limit)
+        values (#{productCode,jdbcType=VARCHAR}, #{categoryCode,jdbcType=VARCHAR}, #{productName,jdbcType=VARCHAR},
+        #{status,jdbcType=TINYINT}, #{gmtCreate,jdbcType=TIMESTAMP}, #{gmtModified,jdbcType=TIMESTAMP},
+        #{stockCount,jdbcType=INTEGER}, #{saleCount,jdbcType=INTEGER}, #{productType,jdbcType=TINYINT},
+        #{points,jdbcType=INTEGER}, #{strategyName,jdbcType=VARCHAR}, #{outCode,jdbcType=VARCHAR},
+        #{pageExchange,jdbcType=VARCHAR}, #{pageResult,jdbcType=VARCHAR}, #{marketPrice,jdbcType=DECIMAL},
+        #{salePrice,jdbcType=DECIMAL}, #{introduction,jdbcType=LONGVARCHAR}, #{sort,jdbcType=INTEGER},
+        #{dayStock,jdbcType=INTEGER}, #{dayUserLimit,jdbcType=INTEGER})
+    </insert>
+    <insert id="insertSelective" parameterType="com.zjht.jfmall.entity.base.BaseProduct">
+        <selectKey keyProperty="id" order="BEFORE" resultType="java.lang.String">
+            SELECT lpad(nextval('SEQ_PRODUCT'),11,'0') as id
+        </selectKey>
+        insert into t_product
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            id,
+            <if test="productCode != null">
+                product_code,
+            </if>
+            <if test="categoryCode != null">
+                category_code,
+            </if>
+            <if test="productName != null">
+                product_name,
+            </if>
+            <if test="status != null">
+                status,
+            </if>
+            <if test="gmtCreate != null">
+                gmt_create,
+            </if>
+            <if test="gmtModified != null">
+                gmt_modified,
+            </if>
+            <if test="stockCount != null">
+                stock_count,
+            </if>
+            <if test="saleCount != null">
+                sale_count,
+            </if>
+            <if test="productType != null">
+                product_type,
+            </if>
+            <if test="points != null">
+                points,
+            </if>
+            <if test="strategyName != null">
+                strategy_name,
+            </if>
+            <if test="outCode != null">
+                out_code,
+            </if>
+            <if test="pageExchange != null">
+                page_exchange,
+            </if>
+            <if test="pageResult != null">
+                page_result,
+            </if>
+            <if test="marketPrice != null">
+                market_price,
+            </if>
+            <if test="salePrice != null">
+                sale_price,
+            </if>
+            <if test="introduction != null">
+                introduction,
+            </if>
+            <if test="sort != null">
+                sort,
+            </if>
+            <if test="dayStock != null">
+                day_stock,
+            </if>
+            <if test="dayUserLimit != null">
+                day_user_limit,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            #{id,jdbcType=VARCHAR},
+            <if test="productCode != null">
+                #{productCode,jdbcType=VARCHAR},
+            </if>
+            <if test="categoryCode != null">
+                #{categoryCode,jdbcType=VARCHAR},
+            </if>
+            <if test="productName != null">
+                #{productName,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null">
+                #{status,jdbcType=TINYINT},
+            </if>
+            <if test="gmtCreate != null">
+                #{gmtCreate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="gmtModified != null">
+                #{gmtModified,jdbcType=TIMESTAMP},
+            </if>
+            <if test="stockCount != null">
+                #{stockCount,jdbcType=INTEGER},
+            </if>
+            <if test="saleCount != null">
+                #{saleCount,jdbcType=INTEGER},
+            </if>
+            <if test="productType != null">
+                #{productType,jdbcType=TINYINT},
+            </if>
+            <if test="points != null">
+                #{points,jdbcType=INTEGER},
+            </if>
+            <if test="strategyName != null">
+                #{strategyName,jdbcType=VARCHAR},
+            </if>
+            <if test="outCode != null">
+                #{outCode,jdbcType=VARCHAR},
+            </if>
+            <if test="pageExchange != null">
+                #{pageExchange,jdbcType=VARCHAR},
+            </if>
+            <if test="pageResult != null">
+                #{pageResult,jdbcType=VARCHAR},
+            </if>
+            <if test="marketPrice != null">
+                #{marketPrice,jdbcType=DECIMAL},
+            </if>
+            <if test="salePrice != null">
+                #{salePrice,jdbcType=DECIMAL},
+            </if>
+            <if test="introduction != null">
+                #{introduction,jdbcType=LONGVARCHAR},
+            </if>
+            <if test="sort != null">
+                #{sort,jdbcType=INTEGER},
+            </if>
+            <if test="dayStock != null">
+                #{dayStock,jdbcType=INTEGER},
+            </if>
+            <if test="dayUserLimit != null">
+                #{dayUserLimit,jdbcType=INTEGER},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByIdSelective" parameterType="com.zjht.jfmall.entity.base.BaseProduct">
+        update t_product
+        <set>
+            <if test="productCode != null">
+                product_code = #{productCode,jdbcType=VARCHAR},
+            </if>
+            <if test="categoryCode != null">
+                category_code = #{categoryCode,jdbcType=VARCHAR},
+            </if>
+            <if test="productName != null">
+                product_name = #{productName,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null">
+                status = #{status,jdbcType=TINYINT},
+            </if>
+            <if test="gmtCreate != null">
+                gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="gmtModified != null">
+                gmt_modified = #{gmtModified,jdbcType=TIMESTAMP},
+            </if>
+            <if test="stockCount != null">
+                stock_count = #{stockCount,jdbcType=INTEGER},
+            </if>
+            <if test="saleCount != null">
+                sale_count = #{saleCount,jdbcType=INTEGER},
+            </if>
+            <if test="productType != null">
+                product_type = #{productType,jdbcType=TINYINT},
+            </if>
+            <if test="points != null">
+                points = #{points,jdbcType=INTEGER},
+            </if>
+            <if test="strategyName != null">
+                strategy_name = #{strategyName,jdbcType=VARCHAR},
+            </if>
+            <if test="outCode != null">
+                out_code = #{outCode,jdbcType=VARCHAR},
+            </if>
+            <if test="pageExchange != null">
+                page_exchange = #{pageExchange,jdbcType=VARCHAR},
+            </if>
+            <if test="pageResult != null">
+                page_result = #{pageResult,jdbcType=VARCHAR},
+            </if>
+            <if test="marketPrice != null">
+                market_price = #{marketPrice,jdbcType=DECIMAL},
+            </if>
+            <if test="salePrice != null">
+                sale_price = #{salePrice,jdbcType=DECIMAL},
+            </if>
+            <if test="introduction != null">
+                introduction = #{introduction,jdbcType=LONGVARCHAR},
+            </if>
+            <if test="sort != null">
+                sort = #{sort,jdbcType=INTEGER},
+            </if>
+            <if test="dayStock != null">
+                day_stock=#{dayStock,jdbcType=INTEGER},
+            </if>
+            <if test="dayUserLimit != null">
+                day_user_limit=#{dayUserLimit,jdbcType=INTEGER},
+            </if>
+        </set>
+        where id = #{id,jdbcType=CHAR}
+    </update>
+    <update id="updateById" parameterType="com.zjht.jfmall.entity.base.BaseProduct">
+    update t_product
+    set product_code = #{productCode,jdbcType=VARCHAR},
+    category_code = #{categoryCode,jdbcType=VARCHAR},
+    product_name = #{productName,jdbcType=VARCHAR},
+    status = #{status,jdbcType=TINYINT},
+    gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
+    gmt_modified = #{gmtModified,jdbcType=TIMESTAMP},
+    stock_count = #{stockCount,jdbcType=INTEGER},
+    sale_count = #{saleCount,jdbcType=INTEGER},
+    product_type = #{productType,jdbcType=TINYINT},
+    points = #{points,jdbcType=INTEGER},
+    strategy_name = #{strategyName,jdbcType=VARCHAR},
+    out_code = #{outCode,jdbcType=VARCHAR},
+    page_exchange = #{pageExchange,jdbcType=VARCHAR},
+    page_result = #{pageResult,jdbcType=VARCHAR},
+    market_price = #{marketPrice,jdbcType=DECIMAL},
+    sale_price = #{salePrice,jdbcType=DECIMAL},
+    introduction = #{introduction,jdbcType=LONGVARCHAR},
+    sort = #{sort,jdbcType=INTEGER},
+    day_stock = #{dayStock,jdbcType=INTEGER}
+    day_user_limit = #{dayUserLimit,jdbcType=INTEGER}
+    where id = #{id,jdbcType=CHAR}
+  </update>
+
+    <update id="deleteById">
+    UPDATE t_product
+    SET status = '2'
+    WHERE id = #{id}
+  </update>
+
+    <select id="productCodeCheck" resultType="int">
+        select count(*) from t_product where 1=1
+        <if test="param.id!=null and param.id!=''">
+            <![CDATA[  and id!= #{param.id} ]]>
+        </if>
+        <if test="param.productCode!=null and param.productCode!=''">
+            and product_code =#{param.productCode}
+        </if>
+    </select>
+
+
+</mapper>

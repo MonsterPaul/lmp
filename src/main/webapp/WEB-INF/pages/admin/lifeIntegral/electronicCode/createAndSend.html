@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>新增 兑换商品</title>
+    <link rel="stylesheet" href="/resource/layui/css/layui.css"/>
+    <style>
+        .layui-colla-content .inline {
+            display: inline-block;
+        }
+
+        .layui-colla-content .line {
+            margin-bottom: 0;
+            float: left;
+            width: 100%;
+        }
+
+        .layui-colla-content .remark {
+            width: 400px;
+        }
+
+        .layui-colla-content .remark div {
+            width: 280px;
+        }
+
+        .layui-form-item .add, .layui-form-item .delete {
+            margin-top: 8px;
+            float: right;
+        }
+
+        .layui-form-item .delete {
+            margin-left: 5px;
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+<div style="margin: 20px;">
+    <form class="layui-form layui-form-pane" action="">
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">
+                <sapn style="color: red;">*</sapn>
+                积分数:</label>
+            <div class="layui-input-block">
+                <select id="points" class="layui-input" style="width: 220px;" lay-verify="required"
+                        lay-search="">
+                    <option value="">请选择</option>
+                    <#list pointsMap?values as value>
+                        <option value="${value}">${value!""}</option>
+                    </#list>
+                </select>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">
+                <sapn style="color: red;">*</sapn>
+                有效期:</label>
+            <div class="layui-input-block">
+                <select id="expireTime" class="layui-input" style="width: 220px;" lay-verify="required"
+                        lay-search="">
+                    <option value="6">6个月</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="layui-colla-item">
+            <div class="layui-colla-content layui-show" style="overflow: hidden;">
+                <div class="layui-form-item content-box-inline-block line">
+                    <div class="layui-form-item inline">
+                        <label class="layui-form-label ">
+                            <sapn style="color: red;">*</sapn>
+                            手机号</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="mobile" value="" autocomplete="off" class="layui-input"
+                                   lay-verify="required" maxlength="11">
+                        </div>
+                    </div>
+                    <div class="layui-form-item inline remark">
+                        <label class="layui-form-label ">备注</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="remark" value="" autocomplete="off" class="layui-input"
+                                   maxlength="200">
+                        </div>
+                    </div>
+                    <a href="javascript: void(0);" onclick="remove(this)" class="layui-btn layui-btn-mini delete"><i
+                            class="layui-icon">&#x1006;</i></a>
+                    <a href="javascript: void(0);" onclick="add(this)" class="layui-btn layui-btn-mini add"><i
+                            class="layui-icon"> &#xe654;</i></a>
+                </div>
+            </div>
+        </div>
+
+        <!-- 按钮-->
+        <div class="layui-form-item">
+            <div style="width: 80%; margin: 0 auto; text-align: center;">
+                <input type="button" onclick="save()" class="layui-btn" value="提交"/>
+            </div>
+        </div>
+    </form>
+</div>
+<#if bizCode??>
+    <input type="hidden" id="bizCode" value="${bizCode }">
+</#if>
+</body>
+<!-- JS -->
+<script type="text/jscript" src="/resource/js/common/jquery-3.1.1.min.js"></script>
+<script src="/resource/js/common/jquery.cookie.js"></script>
+<script src="/resource/layui/layui.all.js"></script>
+
+<script>
+    var bizCode = $('#bizCode').val().substring(0, 5);
+    function add(obj) {
+        var oldtr = $(obj).parent().parent().parent();
+        var newtr = oldtr.clone();
+        //清空克隆元素中input的值
+        newtr.find(":input").each(function (i) {
+            $(this).val("");
+        });
+        oldtr.find(".add").addClass("hidden");
+        oldtr.after(newtr);
+    }
+
+    function remove(obj) {
+        var oldtr = $(obj).parent().parent().parent();
+        var prevtr = oldtr.prev();
+        var nexttr = oldtr.next();
+        //判断 前后是否有相同的div 当前面有 后面没有时 才显示前面div的add操作
+        if (!nexttr.hasClass("layui-colla-item") && prevtr.hasClass("layui-colla-item")) {
+            prevtr.find(".add").removeClass("hidden");
+        }
+        //判断是否是最后一个div
+        if (!nexttr.hasClass("layui-colla-item") && !prevtr.hasClass("layui-colla-item")) {
+            return;
+        }
+        oldtr.remove();
+    };
+
+    //获取所有的电话号码和备注
+    function getMobileAndRemark() {
+        var params = [];
+        $(".layui-colla-item").each(function () {
+                var param = new Object();
+                var mobile = $(this).find("[name='mobile']").val();
+                if (mobile == "") {
+                    alert("手机号为空");
+                    $(this).find("[name='mobile']").focus();
+                    params = [];
+                    return;
+                }
+                param.mobile = mobile;
+                param.remark = $(this).find("[name='remark']").val();
+                params.push(param);
+            }
+        );
+        return params;
+    };
+
+    var subFlag = false;
+    function save() {
+        if(subFlag){
+            alert("正在处理，请勿重复提交");
+            return false;
+        }
+
+        var expireTime = $("#expireTime").val();
+        var points = $("#points").val();
+        if(!points){
+            alert("请选择面值");
+            return false;
+        }
+        var params = getMobileAndRemark();
+        if(params.length==0){
+            return false;
+        }
+        var url = "/admin/lifeIntegral/electronicCode/o_createAndSend.do?bizCode=" + bizCode + "05";
+        //确认框
+        layer.open({//配置样式
+            type: 0,//信息框
+            title: '温馨提示：',
+            content: '确认信息无误,生成并发送电子码吗',
+            shahe: 0.3,//遮罩效果
+            time: 10000,//5秒没有点击自动关闭
+            btn: ['确定', '取消'],
+            yes: function () {//确定
+                layer.closeAll();
+                subFlag = true;
+                $.ajax({
+                    url: url,
+                    type: "POST",
+                    data: {"params": JSON.stringify(params), "expireTime": expireTime, "points": points},
+                    dataType: "JSON",
+                    success: function (data) {
+                        if (data.status == "00000") {//提示成功后重新加载数据
+                            subFlag = false;
+                            layer.msg(data.msg);
+                            setTimeout(function () {
+                                var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                                parent.layui.table.reload("dataTable");
+                                parent.layer.close(index);
+                            }, 2000);
+                        } else {
+                            subFlag = false;
+                            layer.alert(data.msg);
+                        }
+                    }
+                });
+            },
+            btn2: function () {//取消
+                layer.closeAll();
+            }
+        });
+    }
+</script>
+<script>
+    var result = true;//js影响出现多次提及问题，暂不知道原因，所有用这个判断控制提及一次
+    ;!function () {
+        var $ = layui.jquery,
+            layer = layui.layer;
+
+    }();
+
+</script>
+</html>

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>礼包服务商场</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+	<meta name="format-detection" content="telephone=no">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black">
+	<link rel="stylesheet" href="/resource/webapp/lifeintegral/css/base.css">
+	<link rel="stylesheet" href="/resource/webapp/lifeintegral/css/def.css">
+	<script src="/resource/js/common/jquery-3.1.1.min.js"></script>
+	<script src="/resource/webapp/lifeintegral/js/global.js"></script>
+</head>
+<body class="gray-color">
+	<header class="banner-lump">
+		<img src="/resource/webapp/lifeintegral/images/local/banner.jpg">
+	</header>
+	<section class="activity-navigation">
+		<ul class="flex">
+			<li class="flex-1">
+				<a href="http://yht189.cn:9091/Api/shop208/shopListH5">
+					<img src="/resource/webapp/lifeintegral/images/icons/oil.png">
+					<p>附近油站</p>
+				</a>
+			</li>
+			<li class="flex-1">
+				<a href="http://wxsc.youoil.cn/query04/index.html">
+					<img src="/resource/webapp/lifeintegral/images/icons/near.png">
+					<p>附近商户</p>
+				</a>
+			</li>
+			<li class="flex-1">
+				<a href="javascript:alert('建设中');">
+					<img src="/resource/webapp/lifeintegral/images/icons/car.png">
+					<p>车品拼团</p>
+				</a>
+			</li>
+		</ul>
+	</section>
+	<section class="integration-exchange">
+		<div class="tt clearfix">
+			<span class="lt">礼包兑换</span>
+			<p class="rt">我的礼包额：<em>${member.points}</em></p>
+		</div>
+		<ul class="clearfix">
+
+			<#if products?? && products?size gt 0>
+				<#list products as product>
+					<#if product.productType==2 >
+						<#if isWechat?? && isWechat>
+							<li>
+								<a href="exchange.html?productCode=${product.productCode}">
+									<div class="img-box">
+										<img src="${product.productLogoPath!''}">
+									</div>
+									<p>所需礼包额：<span>${product.points}</span></p>
+								</a>
+							</li>
+						</#if>
+						<#else />
+							<li>
+								<a href="exchange.html?productCode=${product.productCode}">
+									<div class="img-box">
+										<img src="${product.productLogoPath!''}">
+									</div>
+									<p>所需礼包额：<span>${product.points}</span></p>
+								</a>
+							</li>
+					</#if>
+
+				</#list>
+			</#if>
+		</ul>
+	</section>
+</body>
+</html>

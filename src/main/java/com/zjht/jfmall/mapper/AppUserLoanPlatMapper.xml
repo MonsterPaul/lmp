@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zjht.jfmall.dao.AppUserLoanPlatMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.zjht.jfmall.entity.AppUserLoanPlat">
+        <id column="id" property="id"/>
+        <result column="app_user_id" property="appUserId"/>
+        <result column="platform_id" property="platformId"/>
+        <result column="account" property="account"/>
+        <result column="password" property="password"/>
+        <result column="apply_amount" property="applyAmount"/>
+        <result column="use_amount" property="useAmount"/>
+        <result column="apply_comm" property="applyComm"/>
+        <result column="use_comm" property="useComm"/>
+        <result column="stop_comm" property="stopComm"/>
+        <result column="back_loan_status" property="backLoanStatus"/>
+        <result column="coll_status" property="collStatus"/>
+        <result column="coll_user_id" property="collUserId"/>
+        <result column="service_user_id" property="serviceUserId"/>
+        <result column="coll_date" property="collDate"/>
+        <result column="opertion_id" property="opertionId"/>
+        <result column="opertion_date" property="opertionDate"/>
+        <result column="record_id" property="recordId"/>
+        <result column="create_time" property="createTime"/>
+        <result column="stop_time" property="stopTime"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, app_user_id AS appUserId, platform_name AS platformName,
+        account, password, apply_amount AS applyAmount,
+        use_amount AS useAmount,
+        apply_comm AS applyComm, use_comm AS useComm,
+        stop_comm AS stopComm,
+        back_loan_status AS backLoanStatus, coll_status AS collStatus,
+        coll_user_id AS collUserId, service_user_id AS serviceUserId,
+        coll_date AS collDate,
+        opertion_id AS opertionId, opertion_date AS opertionDate,record_id AS recordId,create_time AS createTime
+    </sql>
+
+    <select id="countAmount" resultType="java.lang.Double">
+        select sum(use_amount) from app_user_loan_plat where record_id = #{bean.recordId }   and back_loan_status='1'
+    </select>
+
+    <select id="brokerage" resultType="java.lang.Double">
+        select sum(use_comm + stop_comm) from app_user_loan_plat where record_id = #{bean.recordId }   and back_loan_status='1'
+    </select>
+    <select id="kfComm" resultType="java.lang.Double">
+        select sum(use_comm ) from app_user_loan_plat where record_id = #{bean.recordId }   and back_loan_status='1'
+    </select>
+    <select id="loanSum" resultType="double">
+        select sum(use_amount) from app_user_loan_plat where service_user_id = #{serviceUserId}  and back_loan_status='1'
+    </select>
+
+    <select id="sumUseAmountByCollId" resultType="double">
+        select sum(use_amount) from app_user_loan_plat where coll_user_id = #{collId }  and back_loan_status='1'
+    </select>
+
+    <select id="sumApplyCommByCollId" resultType="double">
+        select sum(apply_comm) from app_user_loan_plat where coll_user_id = #{collId }  and back_loan_status='1'
+    </select>
+
+    <select id="loanSums" resultType="double">
+        select sum(use_amount) from app_user_loan_plat where service_user_id = #{bean.id}  and back_loan_status='1'  and coll_date  like CONCAT(#{bean.exchangeTimeBegin},'%')
+    </select>
+
+
+    <select id="sumApplyComm" resultType="double">
+        select sum(apply_amount) from app_user_loan_plat where service_user_id = #{user.id }  and back_loan_status='1'
+    </select>
+
+    <select id="commissionSum" resultType="double">
+        select sum(use_comm) from app_user_loan_plat where service_user_id = #{serviceUserId}   and back_loan_status='1'
+    </select>
+
+    <select id="commissionSums" resultType="double">
+        select sum(use_comm) from app_user_loan_plat where service_user_id = #{user.id}   and back_loan_status='1'  and coll_date  like CONCAT(#{user.exchangeTimeBegin},'%')
+    </select>
+
+    <select id="commissionSumCollection" resultType="double">
+        select sum(stop_comm) from app_user_loan_plat where coll_user_id = #{id }   and back_loan_status='1' and coll_date like CONCAT(#{beginTime},'%')
+    </select>
+
+    <select id="commissionSumCollections" resultType="double">
+        select sum(stop_comm) from app_user_loan_plat where coll_user_id = #{id }   and back_loan_status='1' and coll_date like CONCAT(#{beginTime},'%')
+    </select>
+
+    <update id="updateBackLoanStatus">
+        update app_user_loan_plat set back_loan_status = #{status }, coll_status = '2', opertion_id = #{operId },
+        opertion_date = #{operDate }, coll_date = #{operDate }, coll_status = #{collStatus } where id = #{id }
+    </update>
+
+    <update id="updateCollection">
+        update app_user_loan_plat set coll_user_id = #{collectionId }, coll_status = '1', opertion_id = #{operId }, opertion_date = #{operDate },stop_time= #{operDate } where id = #{id }
+    </update>
+
+    <select id="findById" resultMap="BaseResultMap">
+        select * from app_user_loan_plat where id = #{id }
+    </select>
+
+    <update id="updateComm">
+        update app_user_loan_plat set back_loan_status = #{bean.backLoanStatus }, use_comm = #{bean.useComm }, stop_comm = #{bean.stopComm }, opertion_id = #{operId }, opertion_date = #{operDate }
+        <if test="bean.backLoanStatus =='1'.toString() ">
+            ,coll_date = #{operDate }
+        </if>
+        where id = #{bean.id }
+    </update>
+
+    <select id="userNum" resultType="java.lang.Integer">
+        select COUNT(DISTINCT  app_user_id) from app_user_loan_plat where coll_user_id = #{bean.id } and stop_time like CONCAT(#{bean.exchangeTimeBegin},'%')
+    </select>
+
+    <select id="getSqpts" resultType="java.lang.Integer">
+        select COUNT(DISTINCT  platform_id) from app_user_loan_plat where service_user_id= #{bean.id} and create_time  like CONCAT(#{bean.exchangeTimeBegin},'%')
+    </select>
+    <select id="sumUseComm" resultType="java.lang.Double">
+        SELECT SUM(use_comm) from app_user_loan_plat where back_loan_status='1'
+        <if test="startTime != null and startTime != ''">
+            <![CDATA[ and coll_date >= #{startTime }]]>
+        </if>
+        <if test="endTime != null and endTime != ''">
+            <![CDATA[ and coll_date <= #{endTime }]]>
+        </if>
+    </select>
+
+    <select id="sumStopComm" resultType="java.lang.Double">
+        SELECT SUM(stop_comm) from app_user_loan_plat where back_loan_status='1'
+        <if test="startTime != null and startTime != ''">
+            <![CDATA[ and coll_date >= #{startTime }]]>
+        </if>
+        <if test="endTime != null and endTime != ''">
+            <![CDATA[ and coll_date <= #{endTime }]]>
+        </if>
+    </select>
+
+    <select id="sumNotAmount" resultType="java.lang.Double">
+        SELECT SUM(apply_comm ) from app_user_loan_plat where 1=1
+        <if test="startTime != null and startTime != ''">
+            <![CDATA[ and create_time >= #{startTime }]]>
+        </if>
+        <if test="endTime != null and endTime != ''">
+            <![CDATA[ and create_time <= #{endTime }]]>
+        </if>
+    </select>
+
+    <select id="findUsePlat" resultType="java.lang.String">
+        <![CDATA[
+
+        select distinct n.`name` from app_user_loan_plat as p inner join t_net_loan as n on p.platform_id = n.id
+	      where p.app_user_id = #{apply.appUserId } and p.use_amount is not null and p.use_amount > 0
+
+        ]]>
+    </select>
+
+    <select id="findApplyRecord" resultType="java.lang.String">
+        <![CDATA[
+
+        select distinct n.`name` from app_user_loan_plat as p inner join t_net_loan as n on p.platform_id = n.id
+	      where p.record_id = #{apply.id }
+
+        ]]>
+    </select>
+
+    <select id="count" resultType="java.lang.Integer">
+        select count(*) from app_user_loan_plat where app_user_id = #{userId } and use_amount is not null and use_amount > 0
+    </select>
+
+    <select id="sumAll" resultType="java.lang.Double">
+        select sum(use_amount) from app_user_loan_plat where app_user_id = #{userId }   and back_loan_status='1'
+    </select>
+
+    <select id="sumUseCommByUserId" resultType="java.lang.Double">
+        select sum(use_comm) from app_user_loan_plat where app_user_id = #{userId }   and back_loan_status='1'
+    </select>
+
+    <select id="sumStopCommByUserId" resultType="java.lang.Double">
+        select sum(stop_comm) from app_user_loan_plat where app_user_id = #{userId }   and back_loan_status='1'
+    </select>
+
+    <select id="sumUseCommByPlatId" resultType="java.lang.Double">
+        select sum(use_comm) from app_user_loan_plat where platform_id = #{platId }   and back_loan_status='1'
+    </select>
+
+    <select id="sumUseCommByPlatIds" resultType="java.lang.Double">
+        select sum(use_comm) from app_user_loan_plat where platform_id = #{bean.id }   and back_loan_status='1' and coll_date like CONCAT(#{bean.exchangeTimeBegin},'%')
+    </select>
+
+    <select id="sumStopCommByPlatId" resultType="java.lang.Double">
+        select sum(stop_comm) from app_user_loan_plat where platform_id = #{platId }   and back_loan_status='1'
+    </select>
+
+    <select id="sumStopCommByPlatIds" resultType="java.lang.Double">
+        select sum(stop_comm) from app_user_loan_plat where platform_id = #{bean.id }   and back_loan_status='1' and coll_date like CONCAT(#{bean.exchangeTimeBegin},'%')
+    </select>
+
+    <select id="sumUseCommByRecordId" resultType="java.lang.Double">
+        select sum(use_comm) from app_user_loan_plat where record_id = #{recordId }   and back_loan_status='1'
+    </select>
+
+    <select id="sumStopCommByRecordId" resultType="java.lang.Double">
+        select sum(stop_comm) from app_user_loan_plat where record_id = #{recordId }   and back_loan_status='1'
+    </select>
+
+    <select id="countSuccess" resultType="java.lang.String">
+      select distinct plat.app_user_id from  app_user_loan_plat as plat
+        where plat.service_user_id = #{userId } and plat.use_amount is not null and plat.use_amount > 0
+    </select>
+
+    <select id="countSuccesss" resultType="java.lang.String">
+      select distinct plat.app_user_id from  app_user_loan_plat as plat
+        where plat.service_user_id = #{user.id } and plat.use_amount is not null and plat.use_amount > 0 and  plat.back_loan_status='1' and plat.coll_date like CONCAT(#{user.exchangeTimeBegin},'%')
+    </select>
+
+</mapper>

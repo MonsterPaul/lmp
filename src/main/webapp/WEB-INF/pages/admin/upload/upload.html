@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head lang="en">
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="/resource/layui/css/layui.css"/>
+</head>
+<body>
+<div id="uploadDiv" style="padding: 20px;">
+    <form class="layui-form" >
+        <div class="layui-form-item">
+            <label class="layui-form-label">图片类型：</label>
+            <div class="layui-input-block">
+                <select name="type" id="type"  style="width: 80px;" lay-verify="required">
+                    <option value="">请选择图片类型</option>
+                    <option value="1">logo图</option>
+                    <option value="021">详情图</option>
+                </select>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">图片排序：</label>
+            <div class="layui-input-block">
+                <input type="text" name="title" lay-verify="required" placeholder="请输入排序" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item" style="text-align: center">
+            <button type="button" class="layui-btn" id="upload">
+                <i class="layui-icon">&#xe67c;</i>选择文件上传
+            </button>
+            <button type="button" class="layui-hide" id="subBut">
+                <i class="layui-icon">&#xe67c;</i>选择文件上传
+            </button>
+        </div>
+    </form>
+</div>
+<script type="text/jscript" src="/resource/js/common/jquery-3.1.1.min.js"></script>
+<script src="/resource/layui/layui.all.js"></script>
+<script>
+    layui.use(['layer', 'form','upload'], function(){
+        var layer = layui.layer,
+            form = layui.form,
+            upload = layui.upload;//图片上传
+        $("#upload").click(function () {
+            if(!$("#type").val()){
+                alert("请选择图片类型");
+                return false;
+            }
+            var uploadInst = upload.render({
+                elem: '#subBut',
+                url: '/admin/file/uploadFile.do',
+                data: {bizCode:"${bizCode}"},
+                before: function(obj) {//文件上传之前的回调，用于删除旧的图片
+                    return false;
+                },
+                done: function(res) {
+                    if (res.respCode == "00000") {//上传成功
+                        res.type=$("#type").val();
+                        res.sort = $("#sort").val();
+                        parent.dealUpload(res);
+                        //关闭当前弹出层
+                        var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                        parent.layer.close(index); //再执行关闭
+                    } else {//如果上传失败
+                        layer.alert(res.respMsg);
+                    }
+                },
+                error: function() {
+                    //演示失败状态，并实现重传
+                    var demoText = $('#uploadText');
+                    demoText.html('<span style="color: #FF5722;">上传失败</span> <a class="layui-btn layui-btn-mini img-reload">重试</a>');
+                    demoText.find('.img-reload').on('click', function() {
+                        uploadInst.upload();
+                    });
+                }
+            });
+            $('#subBut').click();
+        });
+
+    });
+</script>
+</body>
+</html>

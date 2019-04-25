@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>礼包服务商场</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="stylesheet" href="/resource/webapp/lifeintegral/css/base.css">
+    <link rel="stylesheet" href="/resource/webapp/lifeintegral/css/def.css">
+    <script src="/resource/js/common/jquery-3.1.1.min.js"></script>
+    <script src="/resource/webapp/lifeintegral/js/global.js"></script>
+    <script src="/resource/js/common/verify.js"></script>
+</head>
+<body class="green-color">
+<header class="login-banner">
+    <img src="/resource/webapp/lifeintegral/images/local/login-bg.jpg">
+</header>
+<section class="login-lump">
+    <form id="subForm">
+        <div class="group">
+            <i class="mobile"></i>
+            <input type="text" placeholder="请输入手机号码" class="ipt" id="mobile" name="mobile"  maxlength="11">
+        </div>
+        <div class="group">
+            <i class="pwd"></i>
+            <input type="password" placeholder="请输入密码" class="ipt" id="password" name="password">
+        </div>
+        <div class="group">
+            <i class="com"></i>
+            <select class="sel" name="channelId">
+                <option value="">请选择渠道</option>
+                <#if channelList??>
+                    <#list channelList as channel>
+                        <option value="${channel.id}">${channel.channelName!''}</option>
+                    </#list>
+                </#if>
+            </select>
+        </div>
+        <div class="tips clearfix">
+            <a href="#" class="fr" id="updatePassword">修改/忘记密码？</a>
+        </div>
+        <a href="javascript:;" class="go-payment" id="subBtn">登录</a>
+        <div class="line tc"><span>或</span></div>
+        <a href="javascript: location.href='index.html';"  class="go-login" >电子码登录</a>
+    </form>
+</section>
+</body>
+<script>
+    $("#subBtn").click(function () {
+        if (!Verify.isPhone($("#mobile").val())) {
+            alert("请输入正确的手机号码");
+            return false;
+        }
+        if (!$("#password").val()) {
+            alert("请输入登陆密码");
+            return false;
+        }
+        $.post("userLogin.do", $("#subForm").serialize(), function (data) {
+            if (data.status != "00000") {
+                alert(data.msg);
+                return false;
+            }
+            window.location.href = "/webapp/lifeIntegral/home.html";
+        }, "json");
+        return false;
+    });
+
+    $("#updatePassword").click(function () {
+        location.href = "updatePassword.html";
+        return false;
+    });
+</script>
+</html>

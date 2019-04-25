@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zjht.jfmall.dao.CollectionRecordMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.zjht.jfmall.entity.CollectionRecord">
+        <id column="id" property="id" />
+        <result column="collection_id" property="collectionId" />
+        <result column="customer_id" property="customerId" />
+        <result column="app_user_id" property="appUserId" />
+        <result column="platform_id" property="platformId" />
+        <result column="collection_money" property="collectionMoney" />
+        <result column="operation_id" property="operationId" />
+        <result column="operation_time" property="operationTime" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, collection_id AS collectionId, customer_id AS customerId, app_user_id AS appUserId, platform_id AS platformId, collection_money AS collectionMoney, operation_id AS operationId, operation_time AS operationTime
+    </sql>
+
+</mapper>
